@@ -9,6 +9,7 @@ http://cep.xor.aps.anl.gov/software/qt4-x11-4.2.2/qtopiacore-testingframebuffer.
 
 #include <stdlib.h>
 #include <stdio.h>
+#include "initiate.h"
 #include "print.h"
 #include "line.h"
 
