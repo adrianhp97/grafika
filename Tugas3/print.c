@@ -21,13 +21,3 @@ int clearScreen(char * fbp, long int location) {
 
   return 0;
 }
-
-int paintPixel(char * fbp, long int location, RGBa color) {
-
-  *(fbp + location) = color.b;        // Some blue
-  *(fbp + location + 1) = color.g;     // A little green
-  *(fbp + location + 2) = color.r;    // A lot of red
-  *(fbp + location + 3) = color.gamma;      // No transparency
-
-  return 0;
-}
