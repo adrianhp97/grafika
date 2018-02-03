@@ -7,23 +7,23 @@ RGBa getColor(FrameBuffer frame, Coordinate point) {
   int r = *(frame.fbp + location + 2);
   int g = *(frame.fbp + location + 1);
   int b = *(frame.fbp + location);
-  int gamma = *(frame.fbp + location + 3);
-  setColor(&color, r, g, b ,gamma);
+  int a = *(frame.fbp + location + 3);
+  setColor(&color, r, g, b ,a);
   return color;
 }
 
-void setColor(RGBa *color, int r, int g, int b, int gamma) {
+void setColor(RGBa *color, int r, int g, int b, int a) {
   (*color).r = r;
   (*color).g = g;
   (*color).b = b;
-  (*color).gamma = gamma;
+  (*color).a = a;
 }
 
 void paintPixel(char * fbp, long int location, RGBa color) {
   *(fbp + location) = color.b;        // Some blue
   *(fbp + location + 1) = color.g;     // A little green
   *(fbp + location + 2) = color.r;    // A lot of red
-  *(fbp + location + 3) = color.gamma;      // No transparency
+  *(fbp + location + 3) = color.a;      // No transparency
 }
 
 bool isEqualR(int r1, int r2) {
@@ -38,13 +38,13 @@ bool isEqualB(int b1, int b2) {
   return (b1 == b2);
 }
 
-bool isEqualGamma(int gamma1, int gamma2) {
-  return (gamma1 == gamma2);
+bool isEqualA(int a1, int a2) {
+  return (a1 == a2);
 }
 
 
 bool isEqualColor(RGBa color1, RGBa color2) {
-  return isEqualR(color1.r, color2.r) && isEqualG(color1.g, color2.g) && isEqualB(color1.b, color2.b) && isEqualGamma(color1.gamma, color2.gamma);
+  return isEqualR(color1.r, color2.r) && isEqualG(color1.g, color2.g) && isEqualB(color1.b, color2.b) && isEqualA(color1.a, color2.a);
 }
 
 void BFill4Connected(FrameBuffer frame, Coordinate point, RGBa fillcoll, RGBa boundcol) {

@@ -13,7 +13,7 @@ typedef struct {
   int r;
   int g;
   int b;
-  int gamma;
+  int a;
 } RGBa;
 
 typedef struct {

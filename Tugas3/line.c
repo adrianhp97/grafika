@@ -1,6 +1,6 @@
 #include "line.h"
 
-void setLine(Line *line) {
+void makeLine(Line *line) {
   int dx = abs((*line).x1-(*line).x0), sx = (*line).x0<(*line).x1 ? 1 : -1;
   int dy = abs((*line).y1-(*line).y0), sy = (*line).y0<(*line).y1 ? 1 : -1; 
   int err = (dx>dy ? dx : -dy)/2, e2;
@@ -12,6 +12,13 @@ void setLine(Line *line) {
     if (e2 >-dx) { err -= dy; (*line).x0 += sx; }
     if (e2 < dy) { err += dx; (*line).y0 += sy; }
   }
+}
+
+void setLineCoordinate(Line *line, Coodinate point1, Coodinate point2) {
+  (*line).x0 = point1.x0;
+  (*line).x1 = point2.x1;
+  (*line).y0 = point1.y0;
+  (*line).y1 = point2.y1;
 }
 
 Coodinate getPoint1(Line line) {
