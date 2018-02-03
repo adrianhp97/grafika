@@ -1,5 +1,4 @@
-#include "raster.h"
-
+#include "color.h"
 
 RGBa getColor(FrameBuffer frame, Coordinate point) {
   RGBa color;
@@ -64,13 +63,13 @@ void BFill8Connected(FrameBuffer frame, Coordinate point, RGBa fillcoll, RGBa bo
   if(!isEqualColor(currcol, fillcoll) && !isEqualColor(currcol, boundcol)) {
     long int location = getLocation(frame, point);
     paintPixel(frame.fbp, location, fillcoll);
-    BFill8Connected(frame, getTopCoordinate, fillcoll, boundcol);
-    BFill8Connected(frame, getBottomCoordinate, fillcoll, boundcol);
-    BFill8Connected(frame, getLeftCoordinate, fillcoll, boundcol);
-    BFill8Connected(frame, getRightCoordinate, fillcoll, boundcol);
-    BFill8Connected(frame, getTopLeftCoordinate, fillcoll, boundcol);
-    BFill8Connected(frame, getBottomLeftCoordinate, fillcoll, boundcol);
-    BFill8Connected(frame, getTopRightCoordinate, fillcoll, boundcol);
-    BFill8Connected(frame, getBottomRightCoordinate, fillcoll, boundcol);
+    BFill8Connected(frame, getTopCoordinate(point), fillcoll, boundcol);
+    BFill8Connected(frame, getBottomCoordinate(point), fillcoll, boundcol);
+    BFill8Connected(frame, getLeftCoordinate(point), fillcoll, boundcol);
+    BFill8Connected(frame, getRightCoordinate(point), fillcoll, boundcol);
+    BFill8Connected(frame, getTopLeftCoordinate(point), fillcoll, boundcol);
+    BFill8Connected(frame, getBottomLeftCoordinate(point), fillcoll, boundcol);
+    BFill8Connected(frame, getTopRightCoordinate(point), fillcoll, boundcol);
+    BFill8Connected(frame, getBottomRightCoordinate(point), fillcoll, boundcol);
   }
 }

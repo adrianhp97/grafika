@@ -1,21 +1,25 @@
 #include "coordinate.h"
 
 void setCoordinate(Coordinate *point, int x, int y) {
-  *point.x = x;
-  *point.y = y;
+  (*point).x = x;
+  (*point).y = y;
 }
 
 void copyCoordinate(Coordinate *dest, Coordinate source) {
-  *dest.x = source.x;
-  *dest.y = source.y;
+  (*dest).x = source.x;
+  (*dest).y = source.y;
 }
 
 void setLocation(long int *location, FrameBuffer frame, Coordinate point) {
-  *location = ;
+  *location = (point.x+frame.vinfo.xoffset) * (frame.vinfo.bits_per_pixel/8) +
+              (point.y+frame.vinfo.yoffset) * frame.finfo.line_length;
+
 }
 
 long int getLocation(FrameBuffer frame, Coordinate point) {
-  return 
+  long int location = (point.x+frame.vinfo.xoffset) * (frame.vinfo.bits_per_pixel/8) +
+                      (point.y+frame.vinfo.yoffset) * frame.finfo.line_length;
+  return location;
 }
 
 

@@ -1,6 +1,14 @@
 #ifndef STRUCT_H
 #define STRUCT_H
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <linux/fb.h>
+#include <sys/mman.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
+
 typedef struct {
   int fbfd;
   struct fb_var_screeninfo vinfo;

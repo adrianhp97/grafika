@@ -1,15 +1,14 @@
 #ifndef LINE_H
 #define LINE_H
 
-#include <stdio.h>
-#include <stdlib.h>
 #include "struct.h"
-#include "coodinate.h"
+#include "coordinate.h"
+#include "color.h"
 
-void makeLine(Line *line);
-void setLineCoordinate(Line *line);
-Coodinate getPoint1(Line line);
-Coodinate getPoint2(Line line);
+void makeLine(FrameBuffer frame, Line *line);
+void setLineCoordinate(Line *line, Coordinate point1, Coordinate point2);
+Coordinate getPoint1(Line line);
+Coordinate getPoint2(Line line);
 int getX0(Line line);
 int getX1(Line line);
 int getY0(Line line);
