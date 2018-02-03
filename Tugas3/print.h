@@ -1,3 +1,6 @@
+#ifndef PRINT_H
+#define PRINT_H
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <fcntl.h>
@@ -26,3 +29,5 @@ int getScreenSize(struct fb_var_screeninfo vinfo, struct fb_fix_screeninfo finfo
 int clearPixel(char * fbp, long int location);
 int clearScreen(char * fbp, long int location);
 int paintPixel(char * fbp, long int location, RGBa color);
+
+#endif
