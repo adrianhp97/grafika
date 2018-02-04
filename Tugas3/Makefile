@@ -4,7 +4,7 @@ LDFLAGS=-g -lm
 
 SOURCES=$(wildcard ./*.c)
 OBJECTS=$(SOURCES:.c=.o)
-MAIN=./main.CC
+MAIN=./main.c
 EXECUTABLE=./a
 
 .PHONY: all bin clean
@@ -16,7 +16,7 @@ bin: $(EXECUTABLE)
 $(EXECUTABLE): $(OBJECTS)
 	$(CC) $(LDFLAGS) $(OBJECTS) -o $@ -lm
 
-%.o: %.CC
+%.o: %.c
 	$(CC) $(CFLAGS) $< -o $@
 
 clean:
