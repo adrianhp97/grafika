@@ -36,4 +36,9 @@ typedef struct {
   int y1;
 } Line;
 
+typedef struct {
+  Line line[20];
+  int nLine;
+} Alphabet;
+
 #endif
