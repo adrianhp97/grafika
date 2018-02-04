@@ -13,5 +13,6 @@ int getX0(Line line);
 int getX1(Line line);
 int getY0(Line line);
 int getY1(Line line);
+bool isInLine(Line line, Coordinate point);
 
 #endif

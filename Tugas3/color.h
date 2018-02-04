@@ -13,7 +13,8 @@ bool isEqualG(int g1, int g2);
 bool isEqualB(int b1, int b2);
 bool isEqualA(int a1, int a2);
 bool isEqualColor(RGBa color1, RGBa color2);
-void BFill4Connected(FrameBuffer frame, Coordinate point, RGBa fillcoll, RGBa boundcol);
-void BFill8Connected(FrameBuffer frame, Coordinate point, RGBa fillcoll, RGBa boundcol);
+void bFill4Connected(FrameBuffer frame, Coordinate point, RGBa fillcoll, RGBa boundcol);
+void bFill8Connected(FrameBuffer frame, Coordinate point, RGBa fillcoll, RGBa boundcol);
+void fillAlphabet(FrameBuffer *frame, RGBa color, Alphabet character);
 
 #endif

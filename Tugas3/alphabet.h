@@ -33,6 +33,4 @@ void makeX(Alphabet *character);
 void makeY(Alphabet *character);
 void makeZ(Alphabet *character);
 
-void fillAlphabet(FrameBuffer *frame, RGBa color);
-
 #endif
