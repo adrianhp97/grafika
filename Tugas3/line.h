@@ -6,6 +6,7 @@
 #include "color.h"
 
 void makeLine(FrameBuffer frame, Line *line);
+void makeLineOnGrid(int gridYsize,int grid[][gridYsize], int gridXSize,Line *line);
 void setLineCoordinate(Line *line, Coordinate point1, Coordinate point2);
 Coordinate getPoint1(Line line);
 Coordinate getPoint2(Line line);

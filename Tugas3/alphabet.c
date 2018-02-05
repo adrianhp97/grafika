@@ -3,3 +3,7 @@
 void makeA(Alphabet *character) {
   
 }
+
+void makeE(Alphabet *character) {
+    
+}

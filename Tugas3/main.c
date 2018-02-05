@@ -18,6 +18,11 @@ int main(int argc, char** argv)
     frame.screensize = getScreenSize(frame.vinfo, frame.finfo);
     frame.fbp = mapDeviceToMemory(&frame.fbfd, frame.screensize);
 
+    //set grid, refactor later
+    int gridXSize = frame.vinfo.xres;
+    int gridYSize = frame.vinfo.yres;
+    int grid[gridXSize][gridYSize];
+
     // set memory here
     Coordinate point1;
     Coordinate point2;
@@ -25,7 +30,25 @@ int main(int argc, char** argv)
     setCoordinate(&point2, 500, 100);
     Line line;
     setLineCoordinate(&line, point1, point2);
-    makeLine(frame, &line);
+    makeLineOnGrid(gridYSize,grid,gridXSize, &line);
+
+    //Draw Grid, refactor later
+    RGBa color;
+    setColor(&color, 2, 213, 32, 0);
+    long int location = 0;
+
+    int i,j;
+    for(i = 0; i < gridXSize; i++) {
+        for(j = 0; j < gridYSize; j++) {
+            if (grid[i][j] == 1){
+                Coordinate point;
+                setCoordinate(&point, i, j);
+                location = getLocation(frame, point);
+                paintPixel(frame.fbp, location, color);
+            }
+        }
+    }
+
     // int x, y;
     // long int location;
     // for (y = 100; y < 300; y++)
