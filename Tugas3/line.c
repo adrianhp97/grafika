@@ -2,24 +2,27 @@
 
 void makeLine(FrameBuffer frame, Line *line) {
   RGBa color;
-  int dx = abs((*line).x1-(*line).x0), sx = (*line).x0<(*line).x1 ? 1 : -1;
-  int dy = abs((*line).y1-(*line).y0), sy = (*line).y0<(*line).y1 ? 1 : -1;
+  int x0 = (*line).x0;
+  int y0 = (*line).y0;
+  int x1 = (*line).x1;
+  int y1 = (*line).y1;
+  int dx = abs(x1-x0), sx = x0<x1 ? 1 : -1;
+  int dy = abs(y1-y0), sy = y0<y1 ? 1 : -1;
   int err = (dx>dy ? dx : -dy)/2, e2;
   long int location = 0;
 
   setColor(&color, 2, 213, 32, 0);
-
   for(;;){
     // setPixel(line.x0,line.y0);
     Coordinate point;
-    setCoordinate(&point, (*line).x0, (*line).y0);
+    setCoordinate(&point, x0, y0);
     location = getLocation(frame, point);
     paintPixel(frame.fbp, location, color);
 
-    if ((*line).x0==(*line).x1 && (*line).y0==(*line).y1) break;
+    if (x0==x1 && y0==y1) break;
     e2 = err;
-    if (e2 >-dx) { err -= dy; (*line).x0 += sx; }
-    if (e2 < dy) { err += dx; (*line).y0 += sy; }
+    if (e2 >-dx) { err -= dy; x0 += sx; }
+    if (e2 < dy) { err += dx; y0 += sy; }
   }
 }
 

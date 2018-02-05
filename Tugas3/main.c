@@ -6,7 +6,7 @@
 #include "color.h"
 #include "line.h"
 
-int main()
+int main(int argc, char** argv)
 {
     FrameBuffer frame;
 
@@ -22,7 +22,7 @@ int main()
     Coordinate point1;
     Coordinate point2;
     setCoordinate(&point1, 500, 300);
-    setCoordinate(&point1, 500, 100);
+    setCoordinate(&point2, 500, 100);
     Line line;
     setLineCoordinate(&line, point1, point2);
     makeLine(frame, &line);
