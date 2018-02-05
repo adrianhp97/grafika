@@ -60,6 +60,22 @@ int main(int argc, char** argv)
         }
     }
 
+    //Jedug Algorithm
+    int toggle;
+    for(i = 0; i < gridXSize; i++) {
+        toggle = 0;
+        for(j = 0; j < gridYSize; j++) {
+            if (grid[i][j] == 1)
+                toggle ^= 1;
+            if (toggle == 1) {
+                Coordinate point;
+                setCoordinate(&point, i, j);
+                location = getLocation(frame, point);
+                paintPixel(frame.fbp, location, color);
+            }
+        }
+    }
+
     // int x, y;
     // long int location;
     // for (y = 100; y < 300; y++)
