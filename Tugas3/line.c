@@ -36,9 +36,10 @@ void makeLineOnGrid(int gridYsize,int grid[][gridYsize], int gridXSize,Line *lin
   int err = (dx>dy ? dx : -dy)/2, e2;
 
   for(;;){
-    grid[x0][y0] = 1;
-    if (x0>gridXSize || y0 > gridYsize) break;
-    if (x0==x1 && y0==y1) break;
+    if (x0 < gridXSize || y0 < gridYsize)
+      grid[x0][y0] = 1;
+    if (x0==x1 && y0==y1)
+      break;
     e2 = err;
     if (e2 >-dx) { err -= dy; x0 += sx; }
     if (e2 < dy) { err += dx; y0 += sy; }
@@ -50,6 +51,13 @@ void setLineCoordinate(Line *line, Coordinate point1, Coordinate point2) {
   (*line).x1 = point2.x;
   (*line).y0 = point1.y;
   (*line).y1 = point2.y;
+}
+
+void setLinePoints(Line *line, int x0 , int y0, int x1, int y1) {
+  (*line).x0 = x0;
+  (*line).x1 = x1;
+  (*line).y0 = y0;
+  (*line).y1 = y1;
 }
 
 Coordinate getPoint1(Line line) {

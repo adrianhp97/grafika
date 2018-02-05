@@ -1,5 +1,5 @@
-#ifndef LINE_H
-#define LINE_H
+#ifndef ALPHABET_H
+#define ALPHABET_H
 
 
 #include "struct.h"

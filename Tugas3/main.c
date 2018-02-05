@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include "alphabet.h"
 #include "struct.h"
 #include "initiate.h"
 #include "print.h"
@@ -24,6 +25,7 @@ int main(int argc, char** argv)
     int grid[gridXSize][gridYSize];
 
     // set memory here
+    /*
     Coordinate point1;
     Coordinate point2;
     setCoordinate(&point1, 500, 300);
@@ -31,13 +33,22 @@ int main(int argc, char** argv)
     Line line;
     setLineCoordinate(&line, point1, point2);
     makeLineOnGrid(gridYSize,grid,gridXSize, &line);
+    */
+
+    //make alphabet and draw it on the grid
+    Alphabet alphabet;
+    makeE(&alphabet);
+    int i;
+    for(i = 0; i < alphabet.nLine; i++) {
+        makeLineOnGrid(gridYSize,grid,gridXSize,&(alphabet.line[i]));
+    }
 
     //Draw Grid, refactor later
     RGBa color;
     setColor(&color, 2, 213, 32, 0);
     long int location = 0;
 
-    int i,j;
+    int j;
     for(i = 0; i < gridXSize; i++) {
         for(j = 0; j < gridYSize; j++) {
             if (grid[i][j] == 1){
