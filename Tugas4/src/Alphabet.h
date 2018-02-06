@@ -15,6 +15,7 @@ class Alphabet {
     Alphabet& operator=(const Alphabet&);
 
   protected:
+    char name;
     Line* line;
     int numberOfLine;
 }
