@@ -3,8 +3,8 @@
 
 using namespace std;
 
-#ifndef FRAMEBUFFER_H
-#define FRAMEBUFFER_H
+#ifndef LINE_H
+#define LINE_H
 
 class Line {
   public:

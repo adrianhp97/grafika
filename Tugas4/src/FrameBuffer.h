@@ -19,11 +19,11 @@ class FrameBuffer {
     ~FrameBuffer();
     FrameBuffer& operator=(const FrameBuffer&);
 
-    void getFixedScreenInformation();
-    void getVariableScreenInformation();
-
-    char* mapDeviceToMemory();
+    void checkFixedScreenInformation();
+    void checkVariableScreenInformation();
+    void mapDeviceToMemory();
     void unmapped();
+    void closeReading();
 
     int getScreenSize();
 
