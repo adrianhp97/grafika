@@ -1,19 +1,18 @@
 #include <iostream>
-#include "Circle.h"
 
 using namespace std;
 
 #ifndef WHEEL_H
 #define WHEEL_H
 
-class Wheel : public Circle{
+class Wing {
 	public:
 		//ctor, cctor, dtor, operator=
-		Wheel();
-		Wheel(int);
-		Wheel(const Wheel&);
-		~Wheel();
-		Wheels& operator=(const Wheel&);
+		Wing();
+		Wing(int);
+		Wing(const Wing&);
+		~Wing();
+		Wing& operator=(const Wing&);
 
 	protected:
     String name;
