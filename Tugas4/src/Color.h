@@ -11,10 +11,7 @@ class Color {
     Color(int, int, int, int);
     Color(string);
     Color(const Color&);
-    ~Color();
     Color& operator=(const Color&);
-
-  protected:
     int r;
     int g;
     int b;
