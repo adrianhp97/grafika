@@ -1,15 +1,15 @@
+#ifndef COLOR_H
+#define COLOR_H
+
 #include <iostream>
 
 using namespace std;
-
-#ifndef COLOR_H
-#define COLOR_H
 
 class Color {
   public:
     Color();
     Color(int, int, int, int);
-    Color(String);
+    Color(string);
     Color(const Color&);
     ~Color();
     Color& operator=(const Color&);
@@ -19,6 +19,6 @@ class Color {
     int g;
     int b;
     int a;
-}
+};
 
 #endif

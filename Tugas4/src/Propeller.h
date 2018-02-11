@@ -1,9 +1,9 @@
+#ifndef PROPELLER_H
+#define PROPELLER_H
+
 #include <iostream>
 
 using namespace std;
-
-#ifndef PROPELLER_H
-#define PROPELLER_H
 
 class Propeller {
 	public:
@@ -15,7 +15,7 @@ class Propeller {
 		Propeller& operator=(const Propeller&);
 
 	protected:
-    String name;
+    string name;
 };
 
 #endif

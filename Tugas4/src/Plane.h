@@ -1,12 +1,12 @@
-#include <iostream>
-#include "Wheel.h"
-#include "Wing.h"
-#include "Propeller.h"
-
-using namespace std;
-
 #ifndef PLANE_H
 #define PLANE_H
+
+#include <iostream>
+#include "Wheel.h"
+#include "Propeller.h"
+#include "Wing.h"
+
+using namespace std;
 
 class Plane {
 	public:
@@ -18,7 +18,7 @@ class Plane {
 		Plane& operator=(const Plane&);
 
 	protected:
-    String name;
+    string name;
     Wheel rightWheel;
     Wheel leftWheel;
     Propeller rightPropeller;

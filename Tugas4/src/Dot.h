@@ -1,16 +1,16 @@
+#ifndef DOT_H
+#define DOT_H
+
 #include <iostream>
 #include "Color.h"
 
 using namespace std;
 
-#ifndef DOT_H
-#define DOT_H
-
 class Dot {
   public:
     Dot();
     Dot(int, int, Color);
-    Dot(int, int, String);
+    Dot(int, int, string);
     Dot(const Dot&);
     ~Dot();
     Dot& operator=(const Dot&);
@@ -19,6 +19,6 @@ class Dot {
     int x;
     int y;
     Color color;
-}
+};
 
 #endif

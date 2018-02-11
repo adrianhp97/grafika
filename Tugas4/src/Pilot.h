@@ -1,9 +1,9 @@
+#ifndef PILOT_H
+#define PILOT_H
+
 #include <iostream>
 
 using namespace std;
-
-#ifndef PILOT_H
-#define PILOT_H
 
 class Pilot {
 	public:
@@ -15,7 +15,7 @@ class Pilot {
 		Pilot& operator=(const Pilot&);
 
 	protected:
-    String name;
+    string name;
 };
 
 #endif

@@ -1,13 +1,13 @@
+#ifndef WING_H
+#define WING_H
+
 #include <iostream>
 
 using namespace std;
 
-#ifndef WHEEL_H
-#define WHEEL_H
-
 class Wing {
 	public:
-		//ctor, cctor, dtor, operator=
+		// ctor, cctor, dtor, operator=
 		Wing();
 		Wing(int);
 		Wing(const Wing&);
@@ -15,7 +15,7 @@ class Wing {
 		Wing& operator=(const Wing&);
 
 	protected:
-    String name;
+    string name;
 };
 
 #endif

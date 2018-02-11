@@ -1,9 +1,9 @@
+#ifndef LASER_H
+#define LASER_H
+
 #include <iostream>
 
 using namespace std;
-
-#ifndef LASER_H
-#define LASER_H
 
 class Laser {
 	public:
@@ -15,7 +15,7 @@ class Laser {
 		Laser& operator=(const Laser&);
 
 	protected:
-    String name;
+    string name;
 };
 
 #endif

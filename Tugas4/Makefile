@@ -1,11 +1,11 @@
-CC=gcc
-CFLAGS=-c -Wall -g
+CC=g++
+CFLAGS=-c -Wall -g -std=c++11
 LDFLAGS=-g -lm
 
-SOURCES=$(wildcard ./*.c)
-OBJECTS=$(SOURCES:.c=.o)
-MAIN=./main.c
-EXECUTABLE=./a
+SOURCES=$(wildcard ./src/*.cpp)
+OBJECTS=$(SOURCES:.cpp=.o)
+MAIN=./src/Main.cpp
+EXECUTABLE=./bin/main
 
 .PHONY: all bin clean
 
@@ -14,9 +14,9 @@ all: bin
 bin: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
-	$(CC) $(LDFLAGS) $(OBJECTS) -o $@ -lm
+	$(CC) $(OBJECTS) -o $@ $(LDFLAGS)
 
-%.o: %.c
+%.o: %.cpp
 	$(CC) $(CFLAGS) $< -o $@
 
 clean:

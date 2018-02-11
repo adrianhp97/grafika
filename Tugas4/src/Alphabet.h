@@ -1,10 +1,10 @@
+#ifndef FRAMEBUFFER_H
+#define FRAMEBUFFER_H
+
 #include "Line.h"
 #include <iostream>
 
 using namespace std;
-
-#ifndef FRAMEBUFFER_H
-#define FRAMEBUFFER_H
 
 class Alphabet {
   public:
@@ -18,6 +18,6 @@ class Alphabet {
     char name;
     Line* line;
     int numberOfLine;
-}
+};
 
 #endif

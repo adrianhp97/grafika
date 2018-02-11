@@ -1,3 +1,6 @@
+#ifndef FRAMEBUFFER_H
+#define FRAMEBUFFER_H
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <fcntl.h>
@@ -8,9 +11,6 @@
 #include <iostream>
 
 using namespace std;
-
-#ifndef FRAMEBUFFER_H
-#define FRAMEBUFFER_H
 
 class FrameBuffer {
   public:
@@ -31,8 +31,8 @@ class FrameBuffer {
     int fbfd;
     struct fb_var_screeninfo vinfo;
     struct fb_fix_screeninfo finfo;
-    long int screensize;
+    size_t screensize;
     char *fbp;
-}
+};
 
 #endif

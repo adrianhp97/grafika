@@ -1,9 +1,9 @@
 #include <iostream>
 #include "FrameBuffer.h"
 
-using namesapce std;
+using namespace std;
 
 int main() {
-  Framebuffer frame;
-  return 0
+  FrameBuffer frame;
+  return 0;
 }

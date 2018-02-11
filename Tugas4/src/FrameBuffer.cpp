@@ -1,6 +1,6 @@
 #include "FrameBuffer.h"
 
-void FrameBuffer::FrameBuffer() {
+FrameBuffer::FrameBuffer() {
   fbfd = open("/dev/fb0", O_RDWR);
   if (fbfd == -1) {
       perror("Error: cannot open framebuffer device");
@@ -11,6 +11,11 @@ void FrameBuffer::FrameBuffer() {
   checkFixedScreenInformation();
   checkVariableScreenInformation();
   mapDeviceToMemory();
+}
+
+FrameBuffer::~FrameBuffer() {
+  this->closeReading();
+  delete fbp;
 }
 
 void FrameBuffer::checkFixedScreenInformation() {
@@ -37,7 +42,7 @@ void FrameBuffer::mapDeviceToMemory() {
 }
 
 void FrameBuffer::unmapped() {
-  munmap(fbp, &screensize);
+  munmap(fbp, screensize);
 }
 
 int FrameBuffer::getScreenSize() {
@@ -45,5 +50,5 @@ int FrameBuffer::getScreenSize() {
 }
 
 void FrameBuffer::closeReading() {
-  close(&fbfd);
+  close(fbfd);
 }

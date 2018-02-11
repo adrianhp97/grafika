@@ -1,15 +1,16 @@
-#include <iostream>
-#include "Shape.h"
-
-using namespace std;
-
 #ifndef RECTANGLE_H
 #define RECTANGLE_H
+
+#include <iostream>
+#include "Shape.h"
+#include "Line.h"
+
+using namespace std;
 
 class Rectangle : public Shape {
   public:
     Rectangle();
-    Rectangle(String);
+    Rectangle(string);
     Rectangle(const Rectangle&);
     ~Rectangle();
     Rectangle& operator=(const Rectangle&);
@@ -17,6 +18,6 @@ class Rectangle : public Shape {
   protected:
     Line* line;
     const int numberOfLine = 4;
-}
+};
 
 #endif

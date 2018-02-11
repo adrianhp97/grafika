@@ -1,10 +1,10 @@
-#include "Dot.h"
-#include <iostream>
-
-using namespace std;
-
 #ifndef LINE_H
 #define LINE_H
+
+#include <iostream>
+#include "Dot.h"
+
+using namespace std;
 
 class Line {
   public:
@@ -18,6 +18,6 @@ class Line {
     Dot d1;
     Dot d2;
 
-}
+};
 
 #endif

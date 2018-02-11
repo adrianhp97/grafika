@@ -1,16 +1,17 @@
-#include <iostream>
-#include "Shape.h"
-
-using namespace std;
-
 #ifndef CIRCLE_H
 #define CIRCLE_H
+
+#include <iostream>
+#include "Shape.h"
+#include "Dot.h"
+
+using namespace std;
 
 class Circle : public Shape {
   public:
     Circle();
-    Circle(String);
-    Circle(String, int);
+    Circle(string);
+    Circle(string, int);
     Circle(const Circle&);
     ~Circle();
     Circle& operator=(const Circle&);
@@ -18,6 +19,6 @@ class Circle : public Shape {
   protected:
     Dot centerPoint;
     int diameter;
-}
+};
 
 #endif
