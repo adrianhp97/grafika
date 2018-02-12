@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "Dot.h"
+#include "FrameBuffer.h"
 
 using namespace std;
 

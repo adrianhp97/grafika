@@ -1,8 +1,9 @@
-#ifndef FRAMEBUFFER_H
-#define FRAMEBUFFER_H
+#ifndef ALPHABET_H
+#define ALPHABET_H
 
 #include "Line.h"
 #include <iostream>
+#include "FrameBuffer.h"
 
 using namespace std;
 
