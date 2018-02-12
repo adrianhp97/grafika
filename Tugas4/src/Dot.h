@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "Color.h"
+#include "FrameBuffer.h"
 
 using namespace std;
 
@@ -10,7 +11,7 @@ class Dot {
   public:
     Dot();
     Dot(int, int, Color);
-    Dot(int, int, String);
+    Dot(int, int, string);
     Dot(const Dot&);
     ~Dot();
     Dot& operator=(const Dot&);

@@ -18,8 +18,8 @@ class Line {
     void makeLineOnGrid(int, int**, int);
     void setLineCoordinate(Dot, Dot);
     void setLinePoints(int, int, int, int);
-    Coordinate getPoint1();
-    Coordinate getPoint2();
+    Dot getPoint1();
+    Dot getPoint2();
     bool isInLine(Dot);
 
   protected:
