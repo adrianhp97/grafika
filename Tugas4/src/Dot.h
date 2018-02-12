@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "Color.h"
+#include "FrameBuffer.h"
 
 using namespace std;
 
@@ -22,7 +23,21 @@ class Dot {
     void setColor(int r, int g, int b);
 	  Color getColor();
 
-  //protected:
+    void setLocation(long int *, FrameBuffer);
+    long int getLocation(FrameBuffer);
+    int getX();
+    int getY();
+    int getColor();
+    Dot getTopCoordinate();
+    Dot getBottomCoordinate();
+    Dot getLeftCoordinate();
+    Dot getRightCoordinate();
+    Dot getTopLeftCoordinate();
+    Dot getBottomLeftCoordinate();
+    Dot getTopRightCoordinate();
+    Dot getBottomRightCoordinate();
+
+  protected:
     int x;
     int y;
     Color color;
