@@ -154,12 +154,40 @@ void FrameBuffer::translate(Shape* shape,float x, float y) {
 
 void FrameBuffer::scale(Shape* shape,float amount) {
   int i;
+  translate(shape, -(float)(*shape).getCenterX(), -(float)(*shape).getCenterY());
   for(i = 0; i < (*shape).getNumberOfVertices(); i++){
-  //  int dx = 
     (*shape).getDots()[i].setX(((float)(*shape).getDot(i).getX()*amount));
     (*shape).getDots()[i].setY(((float)(*shape).getDot(i).getY()*amount));
-    translate(shape, (float)(*shape).getDot(i).getX(), -amount*(float)(*shape).getDot(i).getY());
-    printf("%d ", (*shape).getDot(i).getX());
-    printf("%d\n\n", (*shape).getDot(i).getY());
+  }
+  translate(shape, (float)(*shape).getCenterX(), (float)(*shape).getCenterY());
+}
+
+void FrameBuffer::rotate(Shape* shape,double degree) {
+  int i;
+  double sinTheta = sin(degree*PI/180);
+  double cosTheta = cos(degree*PI/180);
+  translate(shape, -(float)(*shape).getCenterX(), -(float)(*shape).getCenterY());
+  for(i = 0; i < (*shape).getNumberOfVertices(); i++){
+    double x = (double)(*shape).getDot(i).getX();
+    double y = (double)(*shape).getDot(i).getY();
+    (*shape).getDots()[i].setX((x*cosTheta) - (y*sinTheta));
+    (*shape).getDots()[i].setY((x*sinTheta) + (y*cosTheta));
+  }
+  translate(shape, (float)(*shape).getCenterX(), (float)(*shape).getCenterY());
+}
+
+void FrameBuffer::clearScreen() {
+  int x;
+  int y;
+
+  for (y = 0; y < vinfo.yres-10; y++) {
+      for (x = 0; x < vinfo.xres; x++) {
+        int location = (x+vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
+                             (y+vinfo.yoffset) * finfo.line_length;
+        *(fbp + location) = 0;
+        *(fbp + location + 1) = 0;
+        *(fbp + location + 2) = 0;
+        *(fbp + location + 3) = 0;
+      }
   }
 }

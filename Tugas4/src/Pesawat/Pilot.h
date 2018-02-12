@@ -15,12 +15,8 @@ class Pilot : public Shape {
 		//~Pilot();
 		//Pilot& operator=(const Pilot&);
 		int getCenterX();
-		int getCenterY();
-		int getRadius();
-	private:
-		int xCenter;
-		int yCenter;
-		int radius;
+    int getCenterY();
+    int getRadius();
 };
 
 #endif

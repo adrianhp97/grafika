@@ -5,29 +5,29 @@ Dot::Dot() {
 	y = 0;
 }
 
-Dot::Dot(int x, int y, Color c) : color(c) {
+Dot::Dot(float x, float y, Color c) : color(c) {
 	this->x = x;
 	this->y = y;
 }
 
-void Dot::setCoordinate(int _x, int _y) {
+void Dot::setCoordinate(float _x, float _y) {
 	x = _x;
 	y = _y;
 }
 
-void Dot::setX(int _x) {
+void Dot::setX(float _x) {
 	x = _x;
 }
 
-int Dot::getX() {
+float Dot::getX() {
 	return x;
 }
 
-void Dot::setY(int _y) {
+void Dot::setY(float _y) {
 	y = _y;
 }
 
-int Dot::getY() {
+float Dot::getY() {
 	return y;
 }
 
