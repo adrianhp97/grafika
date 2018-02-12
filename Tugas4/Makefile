@@ -9,7 +9,7 @@ EXECUTABLE=./bin/main
 
 .PHONY: all bin clean
 
-all: bin
+all: clean bin
 
 bin: $(EXECUTABLE)
 

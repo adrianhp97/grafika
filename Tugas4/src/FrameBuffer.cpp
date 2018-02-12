@@ -33,6 +33,7 @@ void FrameBuffer::checkVariableScreenInformation() {
 }
 
 void FrameBuffer::mapDeviceToMemory() {
+  screensize = getScreenSize();
   fbp = (char *)mmap(0, screensize, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0);
   if (atoi(fbp) == -1) {
       perror("Error: failed to map framebuffer device to memory");
