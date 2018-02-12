@@ -14,6 +14,7 @@ all: bin
 bin: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
+	mkdir bin
 	$(CC) $(OBJECTS) -o $@ $(LDFLAGS)
 
 %.o: %.cpp
@@ -22,3 +23,4 @@ $(EXECUTABLE): $(OBJECTS)
 clean:
 	-rm $(OBJECTS)
 	-rm $(EXECUTABLE)
+	-rmdir bin
