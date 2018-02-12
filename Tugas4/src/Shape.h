@@ -2,19 +2,26 @@
 #define SHAPE_H
 
 #include <iostream>
+#include "Dot.h"
+#include "Line.h"
 
 using namespace std;
 
 class Shape {
   public:
-    Shape();
-    Shape(string);
-    Shape(const Shape&);
-    ~Shape();
-    Shape& operator=(const Shape&);
-
+    Shape(int);
+    Shape(Dot*, int);
+    //Shape(string);
+    //Shape(const Shape&);
+    //~Shape();
+    //Shape& operator=(const Shape&);
+    Dot getDot(int i);
+    Dot* getDots();
+    Line getLine(int i);
+    int getNumberOfVertices();
   protected:
-    string name;
+    Dot* dots;
+    int vertices;
 };
 
 #endif

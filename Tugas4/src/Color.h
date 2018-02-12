@@ -7,6 +7,7 @@ using namespace std;
 
 class Color {
   public:
+
     Color();
     Color(int, int, int, int);
     Color(string);

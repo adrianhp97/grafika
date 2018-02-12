@@ -9,7 +9,7 @@ using namespace std;
 
 class Line {
   public:
-    Line();
+    //Line();
     Line(Dot, Dot);
     Line(const Line&);
     ~Line();
