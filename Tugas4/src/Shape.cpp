@@ -27,3 +27,20 @@ Line Shape::getLine(int i){
 int Shape::getNumberOfVertices() {
   return vertices;
 }
+
+float Shape::setCenterCoordinate(float x, float y){
+  xCenter = x;
+  yCenter = y;
+}
+
+float Shape::getCenterX(){
+  return xCenter;
+}
+
+float Shape::getCenterY(){
+  return yCenter;
+}
+
+float Shape::getRadius(){
+  return radius;
+}

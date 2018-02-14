@@ -40,6 +40,12 @@ void FrameBuffer::mapDeviceToMemory() {
       exit(4);
   }
   printf("The framebuffer device was mapped to memory successfully.\n");
+  backbuf = (char *)mmap(0, screensize, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
+  if (atoi(backbuf) == -1) {
+      perror("Error: failed to map framebuffer device to memory");
+      exit(4);
+  }
+  printf("The backbuffer device was mapped to memory successfully.\n");
 }
 
 void FrameBuffer::unmapped() {
@@ -50,17 +56,40 @@ int FrameBuffer::getScreenSize() {
   return vinfo.xres * vinfo.yres * vinfo.bits_per_pixel / 8;
 }
 
+int FrameBuffer::getScreenHeight() {
+  return vinfo.yres;
+}
+
+int FrameBuffer::getScreenWidth() {
+  return vinfo.xres;
+}
+
 void FrameBuffer::closeReading() {
   close(fbfd);
+}
+
+void FrameBuffer::clearBuffer() {
+  int copy;
+  for (copy=0;copy<screensize;copy++)
+  {
+    ((char *)(fbp))[copy] = backbuf[copy];
+  }
 }
 
 void FrameBuffer::draw(Dot pixel) {
   int location = (pixel.getX()+vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
                        (pixel.getY()+vinfo.yoffset) * finfo.line_length;
-  *(fbp + location) = pixel.getColor().b;
-  *(fbp + location + 1) = pixel.getColor().g;
-  *(fbp + location + 2) = pixel.getColor().r;
-  *(fbp + location + 3) = pixel.getColor().a;
+  *(backbuf + location) = pixel.getColor().b;
+  *(backbuf + location + 1) = pixel.getColor().g;
+  *(backbuf + location + 2) = pixel.getColor().r;
+  *(backbuf + location + 3) = pixel.getColor().a;
+}
+
+bool FrameBuffer::isPixelClear(Dot pixel) {
+  int location = (pixel.getX()+vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
+                       (pixel.getY()+vinfo.yoffset) * finfo.line_length;
+
+  return (*(backbuf + location) == 0 && *(backbuf + location + 1) == 0 && *(backbuf + location + 2) == 0);
 }
 
 void FrameBuffer::draw(Line line) {
@@ -150,30 +179,61 @@ void FrameBuffer::translate(Shape* shape,float x, float y) {
     (*shape).getDots()[i].setX((float)(*shape).getDot(i).getX()+x);
     (*shape).getDots()[i].setY((float)(*shape).getDot(i).getY()+y);
   }
+  (*shape).setCenterCoordinate((*shape).getCenterX()+x,(*shape).getCenterY()+y);
 }
 
-void FrameBuffer::scale(Shape* shape,float amount) {
+void FrameBuffer::scale(Shape* shape,float amount, float xCenter, float yCenter) {
   int i;
-  translate(shape, -(float)(*shape).getCenterX(), -(float)(*shape).getCenterY());
+  translate(shape, -xCenter, -yCenter);
   for(i = 0; i < (*shape).getNumberOfVertices(); i++){
     (*shape).getDots()[i].setX(((float)(*shape).getDot(i).getX()*amount));
     (*shape).getDots()[i].setY(((float)(*shape).getDot(i).getY()*amount));
   }
-  translate(shape, (float)(*shape).getCenterX(), (float)(*shape).getCenterY());
+  (*shape).setCenterCoordinate((*shape).getCenterX()*amount, (*shape).getCenterY()*amount);
+  translate(shape, xCenter, yCenter);
 }
 
-void FrameBuffer::rotate(Shape* shape,double degree) {
+void FrameBuffer::scale(Shape* shape,float amount) {
+  int i;
+  float xTemp = (float)(*shape).getCenterX();
+  float yTemp = (float)(*shape).getCenterY();
+  translate(shape, -xTemp, -yTemp);
+  for(i = 0; i < (*shape).getNumberOfVertices(); i++){
+    (*shape).getDots()[i].setX(((float)(*shape).getDot(i).getX()*amount));
+    (*shape).getDots()[i].setY(((float)(*shape).getDot(i).getY()*amount));
+  }
+  translate(shape, xTemp, yTemp);
+}
+
+void FrameBuffer::rotate(Shape* shape,double degree, float xCenter, float yCenter) {
   int i;
   double sinTheta = sin(degree*PI/180);
   double cosTheta = cos(degree*PI/180);
-  translate(shape, -(float)(*shape).getCenterX(), -(float)(*shape).getCenterY());
+  translate(shape, -xCenter, -yCenter);
   for(i = 0; i < (*shape).getNumberOfVertices(); i++){
     double x = (double)(*shape).getDot(i).getX();
     double y = (double)(*shape).getDot(i).getY();
     (*shape).getDots()[i].setX((x*cosTheta) - (y*sinTheta));
     (*shape).getDots()[i].setY((x*sinTheta) + (y*cosTheta));
   }
-  translate(shape, (float)(*shape).getCenterX(), (float)(*shape).getCenterY());
+  translate(shape, xCenter, yCenter);
+}
+
+void FrameBuffer::rotate(Shape* shape,double degree) {
+  int i;
+  double sinTheta = sin(degree*PI/180);
+  double cosTheta = cos(degree*PI/180);
+  float xTemp = (float)(*shape).getCenterX();
+  float yTemp = (float)(*shape).getCenterY();
+  translate(shape, -xTemp, -yTemp);
+  for(i = 0; i < (*shape).getNumberOfVertices(); i++){
+    double x = (double)(*shape).getDot(i).getX();
+    double y = (double)(*shape).getDot(i).getY();
+    (*shape).getDots()[i].setX((x*cosTheta) - (y*sinTheta));
+    (*shape).getDots()[i].setY((x*sinTheta) + (y*cosTheta));
+  }
+  (*shape).setCenterCoordinate((*shape).getCenterX()*cosTheta - (*shape).getCenterY()*sinTheta, (*shape).getCenterX()*sinTheta + (*shape).getCenterY()*cosTheta);
+  translate(shape, xTemp, yTemp);
 }
 
 void FrameBuffer::clearScreen() {
@@ -184,10 +244,10 @@ void FrameBuffer::clearScreen() {
       for (x = 0; x < vinfo.xres; x++) {
         int location = (x+vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
                              (y+vinfo.yoffset) * finfo.line_length;
-        *(fbp + location) = 0;
-        *(fbp + location + 1) = 0;
-        *(fbp + location + 2) = 0;
-        *(fbp + location + 3) = 0;
+        *(backbuf + location) = 0;
+        *(backbuf + location + 1) = 0;
+        *(backbuf + location + 2) = 0;
+        *(backbuf + location + 3) = 0;
       }
   }
 }

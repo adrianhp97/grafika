@@ -35,9 +35,15 @@ class FrameBuffer {
     void draw(Shape*);
     void translate(Shape* shape,float, float);
     void scale(Shape*, float);
+    void scale(Shape*, float, float, float);
     void rotate(Shape*,double);
+    void rotate(Shape*, double, float, float);
     void clearScreen();
     int getScreenSize();
+    int getScreenHeight();
+    int getScreenWidth();
+    void clearBuffer();
+    bool isPixelClear(Dot);
 
   private:
     int fbfd;
@@ -45,6 +51,7 @@ class FrameBuffer {
     struct fb_fix_screeninfo finfo;
     size_t screensize;
     char *fbp;
+    char *backbuf;
 };
 
 #endif

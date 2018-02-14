@@ -19,15 +19,16 @@ class Shape {
     Dot* getDots();
     Line getLine(int i);
     int getNumberOfVertices();
-    virtual int getCenterX() = 0;
-    virtual int getCenterY() = 0;
-    virtual int getRadius() = 0;
+    float setCenterCoordinate(float, float);
+    float getCenterX();
+    float getCenterY();
+    float getRadius();
   protected:
     Dot* dots;
     int vertices;
-    int xCenter;
-    int yCenter;
-    int radius;
+    float xCenter;
+    float yCenter;
+    float radius;
 };
 
 #endif

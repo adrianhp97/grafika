@@ -2,25 +2,29 @@
 #include "FrameBuffer.h"
 #include "Color.h"
 #include "Dot.h"
-#include "Pesawat/Pilot.h"
+#include "Plane.h"
+#include "Missile.h"
+#include "People.h"
 
 using namespace std;
 
 int main() {
   int i=1;
   FrameBuffer frame;
-  Pilot pilot(600,350, 0.5);
+  Missile missile(100, 700, 1);
+  Plane plane(683,350, 1);
+  frame.rotate(&missile, 90);
   for(;;i++){
     frame.clearScreen();
-    frame.translate(&pilot, 1, 1);
-    frame.scale(&pilot, 1.005f);
-    frame.rotate(&pilot, 1);
-    frame.draw(&pilot);
-    usleep(10000);
-      //frame.scale(&pilot, 2);
-      //frame.draw(&pilot);
-    //printf("%d\n", i);
-    //printf("%f\n", i*0.01);
+    plane.draw(&frame);
+    if(!missile.CheckCollision(&frame)){
+      frame.rotate(&missile, -1, 0, 0);
+      frame.draw(&missile);
+    } else {
+      plane.detachWheel();
+    }
+    frame.clearBuffer();
+    usleep(30000);
   }
   frame.unmapped();
   frame.closeReading();

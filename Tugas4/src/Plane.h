@@ -2,29 +2,42 @@
 #define PLANE_H
 
 #include <iostream>
-#include "Wheel.h"
-#include "Propeller.h"
-#include "Wing.h"
+#include "Pesawat/Pilot.h"
+#include "Pesawat/Wheel.h"
+#include "Pesawat/Propeller.h"
+#include "Pesawat/Wing.h"
+#include "FrameBuffer.h"
+#include "People.h"
 
 using namespace std;
 
 class Plane {
 	public:
 		//ctor, cctor, dtor, operator=
-		Plane();
-		Plane(int);
-		Plane(const Plane&);
+		Plane(int, int, float);
 		~Plane();
-		Plane& operator=(const Plane&);
+		/*Plane(int);
+		Plane(const Plane&);
+		Plane& operator=(const Plane&);*/
+		void draw(FrameBuffer*);
+		void detachWheel();
+		void animateWheel(FrameBuffer*, Wheel*);
+		void drawPeople(FrameBuffer*, People*);
 
 	protected:
-    string name;
-    Wheel rightWheel;
-    Wheel leftWheel;
-    Propeller rightPropeller;
-    Propeller leftPropeller;
-    Wing rightWing;
-    Wing leftWing;
+		int x;
+		int y;
+		float size;
+		Pilot* pilot;
+		Wing* wing;
+		Propeller* rightPropeller;
+		Propeller* leftPropeller;
+		Wheel* rightWheel;
+    Wheel* leftWheel;
+		People* people;
+		bool wheelDetached;
+		int animationState;
+
 };
 
 #endif
