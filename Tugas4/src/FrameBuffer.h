@@ -1,9 +1,7 @@
 #ifndef FRAMEBUFFER_H
 #define FRAMEBUFFER_H
-#define PI 3.14159265
 
 #include <stdlib.h>
-#include <math.h>
 #include <cstdlib>
 #include <stdio.h>
 #include <fcntl.h>
@@ -33,11 +31,6 @@ class FrameBuffer {
 	  void draw(Dot);
     void draw(Line);
     void draw(Shape*);
-    void translate(Shape* shape,float, float);
-    void scale(Shape*, float);
-    void scale(Shape*, float, float, float);
-    void rotate(Shape*,double);
-    void rotate(Shape*, double, float, float);
     void clearScreen();
     int getScreenSize();
     int getScreenHeight();

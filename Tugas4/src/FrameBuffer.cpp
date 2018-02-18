@@ -173,69 +173,6 @@ void FrameBuffer::draw(Shape* shape) {
   }
 }
 
-void FrameBuffer::translate(Shape* shape,float x, float y) {
-  int i;
-  for(i = 0; i < (*shape).getNumberOfVertices(); i++){
-    (*shape).getDots()[i].setX((float)(*shape).getDot(i).getX()+x);
-    (*shape).getDots()[i].setY((float)(*shape).getDot(i).getY()+y);
-  }
-  (*shape).setCenterCoordinate((*shape).getCenterX()+x,(*shape).getCenterY()+y);
-}
-
-void FrameBuffer::scale(Shape* shape,float amount, float xCenter, float yCenter) {
-  int i;
-  translate(shape, -xCenter, -yCenter);
-  for(i = 0; i < (*shape).getNumberOfVertices(); i++){
-    (*shape).getDots()[i].setX(((float)(*shape).getDot(i).getX()*amount));
-    (*shape).getDots()[i].setY(((float)(*shape).getDot(i).getY()*amount));
-  }
-  (*shape).setCenterCoordinate((*shape).getCenterX()*amount, (*shape).getCenterY()*amount);
-  translate(shape, xCenter, yCenter);
-}
-
-void FrameBuffer::scale(Shape* shape,float amount) {
-  int i;
-  float xTemp = (float)(*shape).getCenterX();
-  float yTemp = (float)(*shape).getCenterY();
-  translate(shape, -xTemp, -yTemp);
-  for(i = 0; i < (*shape).getNumberOfVertices(); i++){
-    (*shape).getDots()[i].setX(((float)(*shape).getDot(i).getX()*amount));
-    (*shape).getDots()[i].setY(((float)(*shape).getDot(i).getY()*amount));
-  }
-  translate(shape, xTemp, yTemp);
-}
-
-void FrameBuffer::rotate(Shape* shape,double degree, float xCenter, float yCenter) {
-  int i;
-  double sinTheta = sin(degree*PI/180);
-  double cosTheta = cos(degree*PI/180);
-  translate(shape, -xCenter, -yCenter);
-  for(i = 0; i < (*shape).getNumberOfVertices(); i++){
-    double x = (double)(*shape).getDot(i).getX();
-    double y = (double)(*shape).getDot(i).getY();
-    (*shape).getDots()[i].setX((x*cosTheta) - (y*sinTheta));
-    (*shape).getDots()[i].setY((x*sinTheta) + (y*cosTheta));
-  }
-  translate(shape, xCenter, yCenter);
-}
-
-void FrameBuffer::rotate(Shape* shape,double degree) {
-  int i;
-  double sinTheta = sin(degree*PI/180);
-  double cosTheta = cos(degree*PI/180);
-  float xTemp = (float)(*shape).getCenterX();
-  float yTemp = (float)(*shape).getCenterY();
-  translate(shape, -xTemp, -yTemp);
-  for(i = 0; i < (*shape).getNumberOfVertices(); i++){
-    double x = (double)(*shape).getDot(i).getX();
-    double y = (double)(*shape).getDot(i).getY();
-    (*shape).getDots()[i].setX((x*cosTheta) - (y*sinTheta));
-    (*shape).getDots()[i].setY((x*sinTheta) + (y*cosTheta));
-  }
-  (*shape).setCenterCoordinate((*shape).getCenterX()*cosTheta - (*shape).getCenterY()*sinTheta, (*shape).getCenterX()*sinTheta + (*shape).getCenterY()*cosTheta);
-  translate(shape, xTemp, yTemp);
-}
-
 void FrameBuffer::clearScreen() {
   int x;
   int y;

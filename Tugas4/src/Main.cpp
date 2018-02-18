@@ -13,12 +13,12 @@ int main() {
   FrameBuffer frame;
   Missile missile(100, 700, 1);
   Plane plane(683,350, 1);
-  frame.rotate(&missile, 90);
+  missile.rotate(90);
   for(;;i++){
     frame.clearScreen();
     plane.draw(&frame);
     if(!missile.CheckCollision(&frame)){
-      frame.rotate(&missile, -1, 0, 0);
+      missile.rotate(-1, 0, 0);
       frame.draw(&missile);
     } else {
       plane.detachWheel();

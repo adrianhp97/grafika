@@ -1,7 +1,9 @@
 #ifndef SHAPE_H
 #define SHAPE_H
+#define PI 3.14159265
 
 #include <iostream>
+#include <math.h>
 #include "Dot.h"
 #include "Line.h"
 
@@ -23,6 +25,12 @@ class Shape {
     float getCenterX();
     float getCenterY();
     float getRadius();
+
+    void translate(float, float);
+    void scale(float);
+    void scale(float, float, float);
+    void rotate(double);
+    void rotate(double, float, float);
   protected:
     Dot* dots;
     int vertices;
