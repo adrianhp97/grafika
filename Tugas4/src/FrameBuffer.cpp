@@ -19,6 +19,74 @@ FrameBuffer::~FrameBuffer() {
   //delete fbp;
 }
 
+int FrameBuffer::getcode(float x, float y){
+	int code = 0;
+	if(y < 0) code |=TOP;
+	if(y > getScreenHeight()-10) code |=BOTTOM;
+	if(x < 0) code |=LEFT;
+	if(x > getScreenWidth()) code |=RIGHT;
+	return code;
+}
+
+bool FrameBuffer::clip(Line* line){
+  float x1 = (*line).getDotSrc()->getX(); float y1 = (*line).getDotSrc()->getY();
+  float x2 = (*line).getDotDest()->getX(); float y2 = (*line).getDotDest()->getY();
+	int outcode1=getcode(x1,y1), outcode2=getcode(x2,y2);
+	int accept = 0; 	//decides if line is to be drawn
+	while(1){
+		float m =(float)(y2-y1)/(x2-x1);
+		//Both points inside. Accept line
+		if(outcode1==0 && outcode2==0){
+			accept = 1;
+			break;
+		}
+		//AND of both codes != 0.Line is outside. Reject line
+		else if((outcode1 & outcode2)!=0){
+			break;
+		}else{
+			int x,y;
+			int temp;
+    //  printf("\n%d %d\n", outcode1, outcode2);
+    //  printf("\n\nBefore\nx1:%f y1:%f\nx2:%f y2:%f", x1,y1,x2,y2);
+			//Decide if point1 is inside, if not, calculate intersection
+			if(outcode1==0)
+				temp = outcode2;
+			else
+				temp = outcode1;
+			//Line clips top edge
+			if(temp & TOP){
+				x = x1 + (getScreenHeight()-10-y1)/m;
+				y = getScreenHeight()-10;
+			}
+			else if(temp & BOTTOM){ 	//Line clips bottom edge
+				x = x1+ (0-y1)/m;
+				y = 0;
+			}else if(temp & LEFT){ 	//Line clips left edge
+				x = 0;
+				y = y1+ m*(0-x1);
+			}else if(temp & RIGHT){ 	//Line clips right edge
+				x = getScreenWidth();
+				y = y1+ m*(getScreenWidth()-x1);
+			}
+			//Check which point we had selected earlier as temp, and replace its co-ordinates
+			if(temp == outcode1){
+				x1 = x;
+				y1 = y;
+        (*line).getDotSrc()->setCoordinate(x1,y1);
+				outcode1 = getcode(x1,y1);
+			}else{
+				x2 = x;
+				y2 = y;
+        (*line).getDotDest()->setCoordinate(x2,y2);
+				outcode2 = getcode(x2,y2);
+			}
+      //printf("\nAfter\nx1:%f y1:%f\nx2:%f y2:%f", x1,y1,x2,y2);
+		}
+	}
+
+  return accept;
+}
+
 void FrameBuffer::checkFixedScreenInformation() {
   if (ioctl(fbfd, FBIOGET_FSCREENINFO, &finfo) == -1) {
     perror("Error reading fixed information");
@@ -93,20 +161,22 @@ bool FrameBuffer::isPixelClear(Dot pixel) {
 }
 
 void FrameBuffer::draw(Line line) {
-  int x0 = line.getDotSrc().getX(); int x1 = line.getDotDest().getX();
-  int y0 = line.getDotSrc().getY(); int y1 = line.getDotDest().getY();
-  int dx = abs(x1-x0), sx = x0<x1 ? 1 : -1;
-  int dy = abs(y1-y0), sy = y0<y1 ? 1 : -1;
-  int err = (dx>dy ? dx : -dy)/2, e2;
+  if(clip(&line)){
+    int x0 = line.getDotSrc()->getX(); int x1 = line.getDotDest()->getX();
+    int y0 = line.getDotSrc()->getY(); int y1 = line.getDotDest()->getY();
+    int dx = abs(x1-x0), sx = x0<x1 ? 1 : -1;
+    int dy = abs(y1-y0), sy = y0<y1 ? 1 : -1;
+    int err = (dx>dy ? dx : -dy)/2, e2;
 
-  for(;;){
-      Dot pxl(x0,y0,line.getDotSrc().getColor());
-      draw(pxl);
-      if (x0==x1 && y0==y1)
-      break;
-      e2 = err;
-      if (e2 >-dx) { err -= dy; x0 += sx; }
-      if (e2 < dy) { err += dx; y0 += sy; }
+    for(;;){
+        Dot pxl(x0,y0,line.getDotSrc()->getColor());
+        draw(pxl);
+        if (x0==x1 && y0==y1)
+        break;
+        e2 = err;
+        if (e2 >-dx) { err -= dy; x0 += sx; }
+        if (e2 < dy) { err += dx; y0 += sy; }
+    }
   }
 }
 

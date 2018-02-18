@@ -1,6 +1,10 @@
 #ifndef FRAMEBUFFER_H
 #define FRAMEBUFFER_H
 #define PI 3.14159265
+#define LEFT 1
+#define RIGHT 2
+#define BOTTOM 4
+#define TOP 8
 
 #include <stdlib.h>
 #include <math.h>
@@ -30,7 +34,7 @@ class FrameBuffer {
     void mapDeviceToMemory();
     void unmapped();
     void closeReading();
-	  void draw(Dot);
+    void draw(Dot);
     void draw(Line);
     void draw(Shape*);
     void translate(Shape* shape,float, float);
@@ -52,6 +56,9 @@ class FrameBuffer {
     size_t screensize;
     char *fbp;
     char *backbuf;
+
+  	bool clip(Line*);
+  	int getcode(float,float);
 };
 
 #endif
