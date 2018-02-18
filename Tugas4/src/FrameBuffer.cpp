@@ -19,72 +19,101 @@ FrameBuffer::~FrameBuffer() {
   //delete fbp;
 }
 
-int FrameBuffer::getcode(float x, float y){
-	int code = 0;
-	if(y < 0) code |=TOP;
-	if(y > getScreenHeight()-10) code |=BOTTOM;
-	if(x < 0) code |=LEFT;
-	if(x > getScreenWidth()) code |=RIGHT;
-	return code;
-}
-
-bool FrameBuffer::clip(Line* line){
-  float x1 = (*line).getDotSrc()->getX(); float y1 = (*line).getDotSrc()->getY();
-  float x2 = (*line).getDotDest()->getX(); float y2 = (*line).getDotDest()->getY();
-	int outcode1=getcode(x1,y1), outcode2=getcode(x2,y2);
-	int accept = 0; 	//decides if line is to be drawn
-	while(1){
-		float m =(float)(y2-y1)/(x2-x1);
-		//Both points inside. Accept line
-		if(outcode1==0 && outcode2==0){
-			accept = 1;
-			break;
-		}
-		//AND of both codes != 0.Line is outside. Reject line
-		else if((outcode1 & outcode2)!=0){
-			break;
-		}else{
-			int x,y;
-			int temp;
-    //  printf("\n%d %d\n", outcode1, outcode2);
-    //  printf("\n\nBefore\nx1:%f y1:%f\nx2:%f y2:%f", x1,y1,x2,y2);
-			//Decide if point1 is inside, if not, calculate intersection
-			if(outcode1==0)
-				temp = outcode2;
-			else
-				temp = outcode1;
-			//Line clips top edge
-			if(temp & TOP){
-				x = x1 + (getScreenHeight()-10-y1)/m;
-				y = getScreenHeight()-10;
-			}
-			else if(temp & BOTTOM){ 	//Line clips bottom edge
-				x = x1+ (0-y1)/m;
-				y = 0;
-			}else if(temp & LEFT){ 	//Line clips left edge
-				x = 0;
-				y = y1+ m*(0-x1);
-			}else if(temp & RIGHT){ 	//Line clips right edge
-				x = getScreenWidth();
-				y = y1+ m*(getScreenWidth()-x1);
-			}
-			//Check which point we had selected earlier as temp, and replace its co-ordinates
-			if(temp == outcode1){
-				x1 = x;
-				y1 = y;
-        (*line).getDotSrc()->setCoordinate(x1,y1);
-				outcode1 = getcode(x1,y1);
-			}else{
-				x2 = x;
-				y2 = y;
+bool FrameBuffer::clip(Line* line,float xmin, float ymin, float xmax, float ymax)
+{
+    float x1 = (*line).getDotSrc()->getX(); float y1 = (*line).getDotSrc()->getY();
+    float x2 = (*line).getDotDest()->getX(); float y2 = (*line).getDotDest()->getY();
+    int accept = 1;
+    int i,j,f=1;
+    for(i=0;i<2;i++)
+        for(j=0;j<4;j++)
+            pixels[i][j]=0;
+    if(y1>ymax)
+        pixels[0][0]=1;
+    if(y1<ymin)
+        pixels[0][1]=1;
+    if(x1>xmax)
+        pixels[0][2]=1;
+    if(x1<xmin)
+        pixels[0][3]=1;
+    if(y2>ymax)
+        pixels[1][0]=1;
+    if(y2<ymin)
+        pixels[1][1]=1;
+    if(x2>xmax)
+        pixels[1][2]=1;
+    if(x2<xmin)
+        pixels[1][3]=1;
+    for(j=0;j<4;j++)
+    {
+        if((pixels[0][j]==0)&& (pixels[1][j]==0))
+            continue;
+        if((pixels[0][j]==1)&& (pixels[1][j]==1))
+        {
+            f=2;
+            break;
+        }
+        f=3;
+    }
+    switch(f)
+    {
+    case 1:
         (*line).getDotDest()->setCoordinate(x2,y2);
-				outcode2 = getcode(x2,y2);
-			}
-      //printf("\nAfter\nx1:%f y1:%f\nx2:%f y2:%f", x1,y1,x2,y2);
-		}
-	}
-
-  return accept;
+        (*line).getDotSrc()->setCoordinate(x1,y1);
+        break;
+    case 2:
+        accept = 0;
+        break;
+    case 3:
+        float xn,yn,xn1,yn1,m;
+        m=(y2-y1)/(x2-x1);
+        xn=x1;xn1=x2;
+        yn=y1;yn1=y2;
+        if(pixels[0][0]==1)
+        {
+            xn=x1+(ymax-y1)/m;
+            yn=ymax;
+        }
+        if(pixels[0][1]==1)
+        {
+            xn=x1+(ymin-y1)/m;
+            yn=ymin;
+        }
+        if(pixels[0][2]==1)
+        {
+            yn=y1+(xmax-x1)*m;
+            xn=xmax;
+        }
+        if(pixels[0][3]==1)
+        {
+            yn=y1+(xmin-x1)*m;
+            xn=xmin;
+        }
+        if(pixels[1][0]==1)
+        {
+            xn1=x2+(ymax-y2)/m;
+            yn1=ymax;
+        }
+        if(pixels[1][1]==1)
+        {
+            xn1=x2+(ymin-y2)/m;
+            yn1=ymin;
+        }
+        if(pixels[1][2]==1)
+        {
+            yn1=y2+(xmax-x2)*m;
+            xn1=xmax;
+        }
+        if(pixels[1][3]==1)
+        {
+            yn1=y2+(xmin-x2)*m;
+            xn1=xmin;
+        }
+        (*line).getDotSrc()->setCoordinate(xn,yn);
+        (*line).getDotDest()->setCoordinate(xn1,yn1);
+        break;
+      }
+      return accept;
 }
 
 void FrameBuffer::checkFixedScreenInformation() {
@@ -161,7 +190,7 @@ bool FrameBuffer::isPixelClear(Dot pixel) {
 }
 
 void FrameBuffer::draw(Line line) {
-  if(clip(&line)){
+  if(clip(&line, 0, 0, vinfo.xres, vinfo.yres-10)){
     int x0 = line.getDotSrc()->getX(); int x1 = line.getDotDest()->getX();
     int y0 = line.getDotSrc()->getY(); int y1 = line.getDotDest()->getY();
     int dx = abs(x1-x0), sx = x0<x1 ? 1 : -1;

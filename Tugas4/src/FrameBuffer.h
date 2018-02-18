@@ -56,9 +56,9 @@ class FrameBuffer {
     size_t screensize;
     char *fbp;
     char *backbuf;
-
-  	bool clip(Line*);
-  	int getcode(float,float);
+    
+    int pixels[2][4];
+    bool clip(Line*,float, float, float, float);
 };
 
 #endif
