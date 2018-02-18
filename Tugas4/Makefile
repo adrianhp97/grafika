@@ -2,7 +2,7 @@ CC=g++
 CFLAGS=-c -Wall -g -std=c++11
 LDFLAGS=-g -lm
 
-SOURCES=$(wildcard ./src/*.cpp)
+SOURCES=$(wildcard ./src/*.cpp) $(wildcard ./src/**/*.cpp)
 OBJECTS=$(SOURCES:.cpp=.o)
 MAIN=./src/Main.cpp
 EXECUTABLE=./bin/main
