@@ -19,6 +19,103 @@ FrameBuffer::~FrameBuffer() {
   //delete fbp;
 }
 
+bool FrameBuffer::clip(Line* line,float xmin, float ymin, float xmax, float ymax)
+{
+    float x1 = (*line).getDotSrc()->getX(); float y1 = (*line).getDotSrc()->getY();
+    float x2 = (*line).getDotDest()->getX(); float y2 = (*line).getDotDest()->getY();
+    int accept = 1;
+    int i,j,f=1;
+    for(i=0;i<2;i++)
+        for(j=0;j<4;j++)
+            pixels[i][j]=0;
+    if(y1>ymax)
+        pixels[0][0]=1;
+    if(y1<ymin)
+        pixels[0][1]=1;
+    if(x1>xmax)
+        pixels[0][2]=1;
+    if(x1<xmin)
+        pixels[0][3]=1;
+    if(y2>ymax)
+        pixels[1][0]=1;
+    if(y2<ymin)
+        pixels[1][1]=1;
+    if(x2>xmax)
+        pixels[1][2]=1;
+    if(x2<xmin)
+        pixels[1][3]=1;
+    for(j=0;j<4;j++)
+    {
+        if((pixels[0][j]==0)&& (pixels[1][j]==0))
+            continue;
+        if((pixels[0][j]==1)&& (pixels[1][j]==1))
+        {
+            f=2;
+            break;
+        }
+        f=3;
+    }
+    switch(f)
+    {
+    case 1:
+        (*line).getDotDest()->setCoordinate(x2,y2);
+        (*line).getDotSrc()->setCoordinate(x1,y1);
+        break;
+    case 2:
+        accept = 0;
+        break;
+    case 3:
+        float xn,yn,xn1,yn1,m;
+        m=(y2-y1)/(x2-x1);
+        xn=x1;xn1=x2;
+        yn=y1;yn1=y2;
+        if(pixels[0][0]==1)
+        {
+            xn=x1+(ymax-y1)/m;
+            yn=ymax;
+        }
+        if(pixels[0][1]==1)
+        {
+            xn=x1+(ymin-y1)/m;
+            yn=ymin;
+        }
+        if(pixels[0][2]==1)
+        {
+            yn=y1+(xmax-x1)*m;
+            xn=xmax;
+        }
+        if(pixels[0][3]==1)
+        {
+            yn=y1+(xmin-x1)*m;
+            xn=xmin;
+        }
+        if(pixels[1][0]==1)
+        {
+            xn1=x2+(ymax-y2)/m;
+            yn1=ymax;
+        }
+        if(pixels[1][1]==1)
+        {
+            xn1=x2+(ymin-y2)/m;
+            yn1=ymin;
+        }
+        if(pixels[1][2]==1)
+        {
+            yn1=y2+(xmax-x2)*m;
+            xn1=xmax;
+        }
+        if(pixels[1][3]==1)
+        {
+            yn1=y2+(xmin-x2)*m;
+            xn1=xmin;
+        }
+        (*line).getDotSrc()->setCoordinate(xn,yn);
+        (*line).getDotDest()->setCoordinate(xn1,yn1);
+        break;
+      }
+      return accept;
+}
+
 void FrameBuffer::checkFixedScreenInformation() {
   if (ioctl(fbfd, FBIOGET_FSCREENINFO, &finfo) == -1) {
     perror("Error reading fixed information");
@@ -93,20 +190,22 @@ bool FrameBuffer::isPixelClear(Dot pixel) {
 }
 
 void FrameBuffer::draw(Line line) {
-  int x0 = line.getDotSrc().getX(); int x1 = line.getDotDest().getX();
-  int y0 = line.getDotSrc().getY(); int y1 = line.getDotDest().getY();
-  int dx = abs(x1-x0), sx = x0<x1 ? 1 : -1;
-  int dy = abs(y1-y0), sy = y0<y1 ? 1 : -1;
-  int err = (dx>dy ? dx : -dy)/2, e2;
+  if(clip(&line, 0, 0, vinfo.xres, vinfo.yres-10)){
+    int x0 = line.getDotSrc()->getX(); int x1 = line.getDotDest()->getX();
+    int y0 = line.getDotSrc()->getY(); int y1 = line.getDotDest()->getY();
+    int dx = abs(x1-x0), sx = x0<x1 ? 1 : -1;
+    int dy = abs(y1-y0), sy = y0<y1 ? 1 : -1;
+    int err = (dx>dy ? dx : -dy)/2, e2;
 
-  for(;;){
-      Dot pxl(x0,y0,line.getDotSrc().getColor());
-      draw(pxl);
-      if (x0==x1 && y0==y1)
-      break;
-      e2 = err;
-      if (e2 >-dx) { err -= dy; x0 += sx; }
-      if (e2 < dy) { err += dx; y0 += sy; }
+    for(;;){
+        Dot pxl(x0,y0,line.getDotSrc()->getColor());
+        draw(pxl);
+        if (x0==x1 && y0==y1)
+        break;
+        e2 = err;
+        if (e2 >-dx) { err -= dy; x0 += sx; }
+        if (e2 < dy) { err += dx; y0 += sy; }
+    }
   }
 }
 

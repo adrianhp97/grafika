@@ -14,8 +14,8 @@ class Line {
     //Line(const Line&);
     //~Line();
     //Line& operator=(const Line&);
-    Dot getDotSrc();
-    Dot getDotDest();
+    Dot* getDotSrc();
+    Dot* getDotDest();
   protected:
     Dot d1;
     Dot d2;
