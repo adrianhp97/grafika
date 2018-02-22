@@ -14,6 +14,7 @@ all: bin
 bin: $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
+	mkdir -p bin
 	$(CC) $(OBJECTS) -o $@ $(LDFLAGS)
 
 %.o: %.cpp
