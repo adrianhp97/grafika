@@ -6,12 +6,6 @@ Image::Image(int x, int y, float size) {
   this->size = size;
 }
 
-Image::~Image() {
-  for(unsigned int i = 0; i < shapes.size(); i++) {
-    delete shapes.at(i);
-  }
-}
-
 Shape* Image::getShapePointer(unsigned int i) {
   return shapes.at(i);
 }
@@ -35,11 +29,13 @@ void Image::translate(float x, float y) {
 }
 
 void Image::scale(float amount) {
-  translate(-this->x,-this->y);
+  int xTemp = this->x;
+  int yTemp = this->y; 
+  translate(-xTemp,-yTemp);
   for(unsigned int i = 0; i < shapes.size(); i++) {
     shapes[i]->scale(amount,0,0);
   }
-  translate(this->x,this->y);
+  translate(xTemp,yTemp);
 }
 
 void Image::scale(float amount, float xCenter, float yCenter) {
@@ -51,11 +47,13 @@ void Image::scale(float amount, float xCenter, float yCenter) {
 }
 
 void Image::rotate(double degree) {
-  translate(-this->x,-this->y);
+  int xTemp = this->x;
+  int yTemp = this->y; 
+  translate(-xTemp,-yTemp);
   for(unsigned int i = 0; i < shapes.size(); i++) {
     shapes[i]->rotate(degree,0,0);
   }
-  translate(this->x,this->y);
+  translate(xTemp,yTemp);
 }
 
 void Image::rotate(double degree, float xCenter, float yCenter) {

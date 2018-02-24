@@ -6,7 +6,7 @@
 #include "Missile.h"
 #include "People.h"
 #include "Input.h"
-#include "Image.h"
+#include "PlaneImage.h"
 
 using namespace std;
 
@@ -16,15 +16,12 @@ int main() {
   Input input;
   Missile missile(100, 700, 1);
   //Plane plane(683,350, 1);
-  Image planeImage(300,175,1);
-  planeImage.addShape(new Wing(0,0,1),0,0);
-  planeImage.addShape(new Pilot(0,0,1),0,0);
-  planeImage.addShape(new Propeller(0,0,1),-100,10);
-  planeImage.addShape(new Propeller(0,0,1),100,10);
+  PlaneImage planeImage(300,175,1);
   missile.rotate(90);
   for(;;i++){
     frame.clearScreen();
     frame.draw(&planeImage);
+    planeImage.rotate(1);
     //plane.draw(&frame);
     //printf("last input : %c \n",input.getLastKey());
     /*f(!missile.CheckCollision(&frame)){

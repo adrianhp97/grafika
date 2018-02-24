@@ -10,7 +10,6 @@ using namespace std;
 class Image {
   public:
     Image(int x, int y, float size);
-    ~Image();
 
     Shape* getShapePointer(unsigned int i);
     void addShape(Shape* newShape, int xRel, int yRel);

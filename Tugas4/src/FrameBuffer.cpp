@@ -190,7 +190,8 @@ bool FrameBuffer::isPixelClear(Dot pixel) {
 }
 
 void FrameBuffer::draw(Line line) {
-  if(clip(&line, 200, 200, vinfo.xres - 200, vinfo.yres-10 - 200)){
+  unsigned int clipSize = 0;
+  if(clip(&line, clipSize, clipSize, vinfo.xres - clipSize, vinfo.yres-10 - clipSize)){
     int x0 = line.getDotSrc()->getX(); int x1 = line.getDotDest()->getX();
     int y0 = line.getDotSrc()->getY(); int y1 = line.getDotDest()->getY();
     int dx = abs(x1-x0), sx = x0<x1 ? 1 : -1;

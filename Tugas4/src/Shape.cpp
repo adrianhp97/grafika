@@ -3,6 +3,9 @@
 Shape::Shape(int n) {
   dots = new Dot[n];
   vertices = n;
+  xCenter = 0;
+  yCenter = 0;
+  radius = 1;
 }
 
 Shape::Shape(Dot* dotCollection, int numberOfVert) {
