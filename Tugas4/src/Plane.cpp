@@ -30,13 +30,13 @@ void Plane::animateWheel(FrameBuffer* fb, Wheel* rightWheel) {
     if(animationState <= 3) {
       rightWheel->rotate(5);
     } else {
-      rightWheel->getDots()[0].setColor(0,0,0);
+      rightWheel->getDot(0)->setColor(0,0,0);
     }
   }
 
-  if(rightWheel->getDot(0).getY() > fb->getScreenHeight()-100) {
+  if(rightWheel->getDot(0)->getY() > fb->getScreenHeight()-100) {
     animationState++;
-    rightWheel->setCenterCoordinate(rightWheel->getDot(0).getX()+(100),rightWheel->getDot(0).getY());
+    rightWheel->setCenterCoordinate(rightWheel->getDot(0)->getX()+(100),rightWheel->getDot(0)->getY());
     rightWheel->translate( 0, -10);
   }
 }

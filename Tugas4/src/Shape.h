@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <math.h>
+#include <vector>
 #include "Dot.h"
 #include "Line.h"
 
@@ -17,8 +18,7 @@ class Shape {
     //Shape(const Shape&);
     //~Shape();
     //Shape& operator=(const Shape&);
-    Dot getDot(int i);
-    Dot* getDots();
+    Dot* getDot(int i);
     Line getLine(int i);
     int getNumberOfVertices();
     float setCenterCoordinate(float, float);
@@ -32,7 +32,7 @@ class Shape {
     void rotate(double);
     void rotate(double, float, float);
   protected:
-    Dot* dots;
+    vector<Dot*> dots;
     int vertices;
     float xCenter;
     float yCenter;

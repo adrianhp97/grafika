@@ -220,8 +220,8 @@ void FrameBuffer::draw(Shape* shape) {
   float slope[n];
 
   for(i = 0;i < n;i++) {
-      a[i][0] = (*shape).getDot(i).getX();
-      a[i][1] = (*shape).getDot(i).getY();
+      a[i][0] = (*shape).getDot(i)->getX();
+      a[i][1] = (*shape).getDot(i)->getY();
       if(maxY < a[i][1])
         maxY = a[i][1];
   }
@@ -264,8 +264,8 @@ void FrameBuffer::draw(Shape* shape) {
       }
     //setcolor(35);
     for (i = 0; i < k; i += 2) {
-      Dot d1(xi[i],y,(*shape).getDot(0).getColor());
-      Dot d2(xi[i + 1] + 1, y, (*shape).getDot(0).getColor());
+      Dot d1(xi[i],y,(*shape).getDot(0)->getColor());
+      Dot d2(xi[i + 1] + 1, y, (*shape).getDot(0)->getColor());
       Line lineTemp(d1,d2);
       draw(lineTemp);
       //getch();
