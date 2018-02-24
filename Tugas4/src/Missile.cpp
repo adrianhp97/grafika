@@ -12,6 +12,8 @@ Missile::Missile(float x, float y, float r) : Shape(5) {
 	radius = r;
 }
 
+Missile::Missile() : Missile(0,0,1) {}
+
 bool Missile::CheckCollision(FrameBuffer* fb){
 	int i;
 	bool clear = true;

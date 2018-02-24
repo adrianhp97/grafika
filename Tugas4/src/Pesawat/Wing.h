@@ -9,6 +9,7 @@ using namespace std;
 class Wing : public Shape {
 	public:
 		// ctor, cctor, dtor, operator=
+		Wing();
 		Wing(int, int, float);
 		//Wing(int);
 		//Wing(const Wing&);

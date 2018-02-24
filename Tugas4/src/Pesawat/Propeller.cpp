@@ -18,3 +18,5 @@ Propeller::Propeller(int x, int y, float r) : Shape(12){
   yCenter = y;
   radius = r;
 }
+
+Propeller::Propeller() : Propeller(0,0,1) {}

@@ -12,6 +12,8 @@ People::People(float x, float y, float r) : Shape(6){
 	radius = r;
 }
 
+People::People() : People(0,0,1) {}
+
 void People::setScale(float r) {
 	dots[0].setCoordinate(xCenter-(r*10), yCenter);
 	dots[1].setCoordinate(xCenter-(r*7.5), yCenter-(r*7.5));

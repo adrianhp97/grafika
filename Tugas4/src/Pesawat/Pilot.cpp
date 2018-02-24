@@ -10,3 +10,5 @@ Pilot::Pilot(int x, int y, float r) : Shape(4){
   yCenter = y;
   radius = r;
 }
+
+Pilot::Pilot() : Pilot(0,0,1) {}

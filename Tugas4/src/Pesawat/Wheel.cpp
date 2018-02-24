@@ -24,3 +24,5 @@ Wheel::Wheel(int x, int y, float r) : Shape(16){
   yCenter = y;
   radius = r;
 }
+
+Wheel::Wheel() : Wheel(0,0,1) {}

@@ -9,6 +9,7 @@ using namespace std;
 
 class Missile : public Shape {
 	public:
+		Missile();
 		Missile(float , float, float);
 		bool CheckCollision(FrameBuffer*);
 };

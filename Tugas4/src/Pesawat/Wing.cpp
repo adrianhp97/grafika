@@ -9,3 +9,5 @@ Wing::Wing(int x, int y, float r) : Shape(3){
   yCenter = y;
   radius = r;
 }
+
+Wing::Wing() : Wing(0,0,1) {}

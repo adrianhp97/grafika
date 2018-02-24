@@ -9,6 +9,7 @@ using namespace std;
 
 class People : public Shape {
 	public:
+		People();
 		People(float , float, float);
 		void setScale(float);
 };

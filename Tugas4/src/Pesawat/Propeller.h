@@ -8,6 +8,7 @@ using namespace std;
 class Propeller : public Shape {
 	public:
 		//ctor, cctor, dtor, operator=
+		Propeller();
 		Propeller(int, int, float);
 		//~Propeller();
 		/*Propeller(int);
