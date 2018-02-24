@@ -10,6 +10,11 @@ Dot::Dot(float x, float y, Color c) : color(c) {
 	this->y = y;
 }
 
+Dot::Dot(const Dot& dot) : color(dot.color){
+	this->x = dot.x;
+	this->y = dot.y;
+}
+
 void Dot::setCoordinate(float _x, float _y) {
 	x = _x;
 	y = _y;

@@ -11,7 +11,7 @@ class Dot {
     Dot();
     Dot(float, float, Color);
     //Dot(int, int, string);
-    //Dot(const Dot&);
+    Dot(const Dot&);
     //~Dot();
     //Dot& operator=(const Dot&);
     void setCoordinate(float,float);

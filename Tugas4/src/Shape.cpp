@@ -4,7 +4,6 @@ Shape::Shape(int n) {
   for(int i = 0; i < n; i++) {
     dots.push_back(new Dot());
   }
-  vertices = n;
   xCenter = 0;
   yCenter = 0;
   radius = 1;
@@ -14,21 +13,81 @@ Shape::Shape(Dot* dotCollection, int numberOfVert) {
   for(int i = 0; i < numberOfVert; i++) {
     dots.push_back(&dotCollection[i]);
   }
-  vertices = numberOfVert;
 }
 
-Dot* Shape::getDot(int i){
+Shape::Shape(const Shape& shape) {
+  for(int i = 0; i < shape.getNumberOfVertices(); i++) {
+    dots.push_back(new Dot(*shape.getDot(i)));
+  }
+  this->xCenter = shape.xCenter;
+  this->yCenter = shape.yCenter;
+  this->radius = shape.radius;
+}
+
+Shape::~Shape() {
+  for(int i = 0; i < getNumberOfVertices(); i++) {
+    delete dots.at(i);
+  }
+}
+
+Dot* Shape::getDot(int i) const {
   return dots.at(i);
 }
 
+vector<Dot*>* Shape::getDots() {
+  return &dots;
+}
+
+void Shape::addNewDot(Dot* dot) {
+
+  dots.push_back(new Dot(*dot));
+}
+
+void Shape::addNewDot(int x, int y, Color color) {
+  dots.push_back(new Dot(x,y,color));
+}
+
+void Shape::insertNewDot(int pos,int x, int y, Color color) {
+  if (pos < dots.size()) {
+    dots.insert(dots.begin()+pos, new Dot(x,y,color));
+  } else {
+    dots.push_back(new Dot(x,y,color));
+  }
+}
+
+vector<Dot*>::iterator Shape::insertNewDot(vector<Dot*>::iterator it,int x, int y, Color color) {
+  return dots.insert(it, new Dot(x,y,color));
+}
+
+void Shape::replaceDot(int pos, int x, int y, Color color) {
+  Dot* oldValue = dots.at(pos); 
+  dots.at(pos) = new Dot(x,y,color);
+  delete oldValue;
+}
+
+void Shape::replaceDot(vector<Dot*>::iterator it, int x, int y, Color color) {
+  Dot* oldValue = *it;
+  *it = new Dot(x,y,color);
+  delete oldValue;
+}
+   
+
+void Shape::deleteDot(int pos) {
+  dots.erase(dots.begin() + pos);
+}
+
+vector<Dot*>::iterator Shape::deleteDot(vector<Dot*>::iterator it) {
+  return dots.erase(it);
+}
+
 Line Shape::getLine(int i){
-  int x = (i+1) >= vertices ? 0 : i+1;
+  int x = (i+1) > getNumberOfVertices()-1 ? 0 : i+1;
   Line lineTemp(*dots.at(i), *dots.at(x));
   return lineTemp;
 }
 
-int Shape::getNumberOfVertices() {
-  return vertices;
+int Shape::getNumberOfVertices() const{
+  return dots.size();
 }
 
 float Shape::setCenterCoordinate(float x, float y){
