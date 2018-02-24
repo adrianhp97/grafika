@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
   //Plane plane(683,350, 1);
   PlaneImage planeImage(250,250,1);
   float inp = atoi(argv[i]);
-  View planeView(&planeImage,0,inp,0,inp);
+  View planeView(&planeImage,inp,235,350,275);
   missile.rotate(90);
   for(;;i++){
     frame.clearScreen();

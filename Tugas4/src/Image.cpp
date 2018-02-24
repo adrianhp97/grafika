@@ -20,6 +20,13 @@ int Image::getNumberOfShapes() {
   return shapes.size();
 }
 
+int Image::getX() {
+  return x;
+}
+int Image::getY() {
+  return y;
+}
+
 void Image::translate(float x, float y) {
   for(unsigned int i = 0; i < shapes.size(); i++) {
     shapes[i]->translate(x,y);

@@ -15,6 +15,9 @@ class Image {
     void addShape(Shape* newShape, int xRel, int yRel);
     int getNumberOfShapes();
 
+    int getX();
+    int getY();
+
     void translate(float, float);
     void scale(float);
     void scale(float, float, float);
