@@ -17,6 +17,7 @@
 #include "Dot.h"
 #include "Line.h"
 #include "Shape.h"
+#include "Image.h"
 
 using namespace std;
 
@@ -35,6 +36,7 @@ class FrameBuffer {
     void draw(Dot);
     void draw(Line);
     void draw(Shape*);
+    void draw(Image*);
     void clearScreen();
     int getScreenSize();
     int getScreenHeight();

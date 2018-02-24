@@ -272,6 +272,12 @@ void FrameBuffer::draw(Shape* shape) {
   }
 }
 
+void FrameBuffer::draw(Image* image) {
+  for(int i = 0; i < image->getNumberOfShapes(); i++) {
+    draw(image->getShapePointer(i));
+  }
+}
+
 void FrameBuffer::clearScreen() {
   int x;
   int y;
