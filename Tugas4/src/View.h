@@ -11,11 +11,13 @@ class View : public Image  {
 
     void clipImage(Image*, float xmin, float ymin, float xmax, float ymax);
     void updateClip(float xmin, float ymin, float xmax, float ymax);
+    void updateClipRelative(float xmin, float ymin, float xmax, float ymax);
 
     Shape* clipShape(Shape* shape,float xmin, float ymin, float xmax, float ymax);
 
   protected:
     Image* sourceImage;
+    float xmin; float ymin; float xmax; float ymax;
 };
 
 #endif

@@ -19,20 +19,26 @@ int main(int argc, char* argv[]) {
   //Plane plane(683,350, 1);
   PlaneImage planeImage(250,250,1);
   float inp = atoi(argv[i]);
-  View planeView(&planeImage,inp,235,350,275);
+  View planeView(&planeImage,150,225,350,275);
   missile.rotate(90);
+  int moveFactor = inp; 
   for(;;i++){
     frame.clearScreen();
     frame.draw(&planeView);
-    planeView.rotate(1);
-    //plane.draw(&frame);
-    //printf("last input : %c \n",input.getLastKey());
-    /*f(!missile.CheckCollision(&frame)){
-      missile.rotate(-1, 0, 0);
-      frame.draw(&missile);
-    } else {
-      //plane.detachWheel();
-    }*/
+    char lastKey = input.getLastKey();
+    if (lastKey == 'w') {
+      planeView.updateClipRelative(0,-moveFactor,0,-moveFactor);
+      planeView.translate(0, -moveFactor);
+    } else if (lastKey == 's') {
+      planeView.updateClipRelative(0,moveFactor,0,moveFactor);
+      planeView.translate(0,moveFactor);
+    } else if (lastKey == 'd') {
+      planeView.updateClipRelative(moveFactor,0,moveFactor,0);
+      planeView.translate(-moveFactor,0);
+    } else if (lastKey == 'a') {
+      planeView.updateClipRelative(-moveFactor,0,-moveFactor,0);
+      planeView.translate(moveFactor,0);
+    }
     frame.clearBuffer();
     usleep(30000);
   }

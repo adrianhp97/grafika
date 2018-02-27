@@ -1,6 +1,11 @@
 #include "View.h"
 
 View::View(Image* image, float xmin, float ymin, float xmax, float ymax) : Image(image->getX(),image->getY(),1){
+  this->sourceImage = image;
+  this->xmin = xmin;
+  this->ymin = ymin;
+  this->xmax = ymax;
+  this->ymax = ymax;
   clipImage(image,xmin,ymin,xmax,ymax);
 }
 
@@ -20,13 +25,33 @@ void View::clipImage(Image* image,float xmin, float ymin, float xmax, float ymax
 }
 
 void View::updateClip(float xmin, float ymin, float xmax, float ymax) {
+  for(int i = 0; i < sourceImage->getNumberOfShapes(); i++) {
+    delete shapes.at(i);
+  }
+  shapes.clear();
+  for(int i = 0; i < sourceImage->getNumberOfShapes(); i++) {
+    Shape* newClippedShape = clipShape(sourceImage->getShapePointer(i),xmin,ymin,xmax,ymax);
+    shapes.push_back(newClippedShape);
+  }
+}
 
+void View::updateClipRelative(float xmin, float ymin, float xmax, float ymax) {
+  updateClip(
+    this->xmin + xmin,
+    this->ymin + ymin,
+    this->xmax + xmax,
+    this->ymax + ymax
+  );
+  this->xmin += xmin;
+  this->ymin += ymin;
+  this->xmax += xmax;
+  this->ymax += ymax;
 }
 
 Shape* View::clipShape(Shape* shape,float xmin, float ymin, float xmax, float ymax) {
   //polygon clipping: Sutherland Hogman
   int xTemp = this->x;
-  int yTemp = this->y; 
+  int yTemp = this->y;
 
   Shape clippedShape(*shape); 
   translate(-xTemp,-yTemp);
