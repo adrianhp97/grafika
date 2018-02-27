@@ -4,7 +4,7 @@ View::View(Image* image, float xmin, float ymin, float xmax, float ymax) : Image
   this->sourceImage = image;
   this->xmin = xmin;
   this->ymin = ymin;
-  this->xmax = ymax;
+  this->xmax = xmax;
   this->ymax = ymax;
   clipImage(image,xmin,ymin,xmax,ymax);
 }

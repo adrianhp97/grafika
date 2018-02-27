@@ -26,18 +26,17 @@ int main(int argc, char* argv[]) {
     frame.clearScreen();
     frame.draw(&planeView);
     char lastKey = input.getLastKey();
-    if (lastKey == 'w') {
-      planeView.updateClipRelative(0,-moveFactor,0,-moveFactor);
-      planeView.translate(0, -moveFactor);
-    } else if (lastKey == 's') {
-      planeView.updateClipRelative(0,moveFactor,0,moveFactor);
-      planeView.translate(0,moveFactor);
-    } else if (lastKey == 'd') {
-      planeView.updateClipRelative(moveFactor,0,moveFactor,0);
-      planeView.translate(-moveFactor,0);
-    } else if (lastKey == 'a') {
-      planeView.updateClipRelative(-moveFactor,0,-moveFactor,0);
-      planeView.translate(moveFactor,0);
+    if (lastKey != '\0'){
+      planeView.updateClipRelative(0,0,0,0);
+      if (lastKey == 'w') {
+        planeImage.translate(0, -moveFactor);
+      } else if (lastKey == 's') {
+        planeImage.translate(0,moveFactor);
+      } else if (lastKey == 'd') {
+        planeImage.translate(moveFactor,0);
+      } else if (lastKey == 'a') {
+        planeImage.translate(-moveFactor,0);
+      }
     }
     frame.clearBuffer();
     usleep(30000);
