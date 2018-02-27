@@ -10,7 +10,7 @@
 
 class PlaneImage : public Image {
   public:
-    PlaneImage(int x, int y, int size);
+    PlaneImage(int x, int y, float size);
     ~PlaneImage();
 };
 

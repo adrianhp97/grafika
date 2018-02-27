@@ -15,9 +15,9 @@ class View : public Image  {
 
     Shape* clipShape(Shape* shape,float xmin, float ymin, float xmax, float ymax);
 
+    float xmin; float ymin; float xmax; float ymax;
   protected:
     Image* sourceImage;
-    float xmin; float ymin; float xmax; float ymax;
 };
 
 #endif

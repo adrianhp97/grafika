@@ -1,6 +1,6 @@
 #include "PlaneImage.h"
 
-PlaneImage::PlaneImage(int x, int y, int size) : Image(x,y,size) {
+PlaneImage::PlaneImage(int x, int y, float size) : Image(x,y,size) {
   addShape(new Wing(),0,0);
   addShape(new Propeller(),(size*100),(size*5));
   addShape(new Propeller(),0-(size*100),(size*5));

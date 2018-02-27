@@ -279,6 +279,23 @@ void FrameBuffer::draw(Image* image) {
   }
 }
 
+void FrameBuffer::setViewBorder(View* view, int r, int g, int b) {
+  int i;
+  Dot dot[4];
+  dot[0].setCoordinate(view->xmin, view->ymin);
+  dot[1].setCoordinate(view->xmax, view->ymin);
+  dot[2].setCoordinate(view->xmax, view->ymax);
+  dot[3].setCoordinate(view->xmin, view->ymax);
+  for(i = 0; i < 4;i++){
+    dot[i].setColor(r,g,b);
+  }
+  for(i = 0; i < 4;i++){
+    int j = i + 1 >= 4 ? 0 : i + 1;
+    Line line(dot[i], dot[j]);
+    draw(line);
+  }
+}
+
 void FrameBuffer::clearScreen() {
   int x;
   int y;

@@ -18,6 +18,7 @@
 #include "Line.h"
 #include "Shape.h"
 #include "Image.h"
+#include "View.h"
 
 using namespace std;
 
@@ -43,6 +44,7 @@ class FrameBuffer {
     int getScreenWidth();
     void clearBuffer();
     bool isPixelClear(Dot);
+    void setViewBorder(View*, int, int ,int);
 
   private:
     int fbfd;
@@ -51,7 +53,7 @@ class FrameBuffer {
     size_t screensize;
     char *fbp;
     char *backbuf;
-    
+
     int pixels[2][4];
     bool clip(Line*,float, float, float, float);
 };
