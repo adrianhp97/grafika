@@ -1,8 +1,14 @@
+#include "MenuBox.h"
+
+MenuBox::MenuBox() : Shape(4) {
+  
+}
+
 MenuBox::MenuBox(int x, int y, float r, int color) : Shape(4) {
-  dots[0]->setCoordinate(x-(r*20), y-(r*10));
-  dots[1]->setCoordinate(x+(r*20), y+(r*10));
-  dots[2]->setCoordinate(x-(r*20), y+(r*10));
-  dots[3]->setCoordinate(x+(r*20), y-(r*10));
+  dots[0]->setCoordinate(x-(r*8), y-(r*2));
+  dots[1]->setCoordinate(x+(r*8), y-(r*2));
+  dots[2]->setCoordinate(x+(r*8), y+(r*2));
+  dots[3]->setCoordinate(x-(r*8), y+(r*2));
   switch(color) {
     case 1:
       dots[0]->setColor(0, 0, 150);

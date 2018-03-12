@@ -9,10 +9,10 @@ using namespace std;
 
 class Text{
   public:
-    Text(string, int, int, );
+    Text(string, int, int);
 
   private:
-    Shape* Character
+    Shape* Character;
 };
 
 #endif

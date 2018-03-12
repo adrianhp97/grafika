@@ -8,7 +8,8 @@ using namespace std;
 
 class MenuBox : public Shape {
 public:
-  MenuBox(int,int,float);
+  MenuBox();
+  MenuBox(int,int,float,int);
 
 };
 
