@@ -13,6 +13,7 @@
 #include "CustomShape.h"
 #include "ItbMapImage.h"
 #include "Menu/MenuBox.h"
+#include "Menu/MenuActivities.h"
 
 using namespace std;
 
@@ -29,6 +30,7 @@ int main(int argc, char* argv[]) {
   menu[2] = new MenuBox(width/2,240+height/3,20,3);
   menu[3] = new MenuBox(width/2,360+height/3,20,4);
   menu[state]->scale(1.5f);
+
   for(;;) {
     frame.clearScreen();
     char lastKey = input.getLastKey();
@@ -44,7 +46,18 @@ int main(int argc, char* argv[]) {
         menu[state+1]->scale(0.66f);
       }
       if(lastKey == '\n') {
-        menu[state]->rotate(90);
+        //menu[state]->rotate(90);
+        switch (state) {
+          case 0 : {
+            StartMap();
+            break;
+          }
+          case 1 : {
+            StartPlane();
+            break;
+          }
+          default : break;
+        }
       }
     }
     for(int j=0;j<4;j++) {

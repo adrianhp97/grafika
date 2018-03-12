@@ -2,3 +2,5 @@ a
 *.o
 .vscode
 /bin
+/.idea
+/cmake-build-debug
