@@ -13,11 +13,17 @@
 #include "../View.h"
 #include "../CustomShape.h"
 #include "../ItbMapImage.h"
+#include "Tugas1.h"
 
 #define MAX_MTX 100
 #define LETTER_SPACING 51
 #define LINE_SPACING 70
 #define X_POS 200
+
+int StartCredit() {
+    creditTugas();
+	return 0;
+}
 
 int StartMap() {
   int i=1;

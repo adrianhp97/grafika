@@ -61,6 +61,9 @@ int main(int argc, char* argv[]) {
           case 2 : {
             credits->ShowCredits();
           }
+          case 3 : {
+            StartCredit();
+          }
           default : break;
         }
       }

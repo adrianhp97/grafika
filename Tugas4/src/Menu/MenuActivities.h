@@ -14,6 +14,7 @@
 
 using namespace std;
 
+int StartCredit();
 int StartMap();
 int StartPlane();
 CustomShape* readFile(string fileName);
