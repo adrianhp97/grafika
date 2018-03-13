@@ -1,139 +1,3 @@
-#include <iostream>
-#include <stdio.h>
-#include <vector>
-#include "MenuActivities.h"
-#include "../FrameBuffer.h"
-#include "../Color.h"
-#include "../Dot.h"
-#include "../Plane.h"
-#include "../Missile.h"
-#include "../People.h"
-#include "../Input.h"
-#include "../PlaneImage.h"
-#include "../View.h"
-#include "../CustomShape.h"
-#include "../ItbMapImage.h"
-
-#define MAX_MTX 100
-#define LETTER_SPACING 51
-#define LINE_SPACING 70
-#define X_POS 200
-
-int StartMap() {
-  int i=1;
-  FrameBuffer frame;
-  Input input;
-  vector<CustomShape*> shape;
-  vector<CustomShape*> shape2;
-  string dest;
-  for(int i=2;i<82;i++){
-    dest = "../data/" + std::to_string(i) + ".txt";
-    shape.push_back(readFile(dest));
-    shape2.push_back(readFile(dest));
-  }
-  //for(i=0;i<shape->getNumberOfVertices();i++){
-  //  printf("%f %f", shape->getDot(i)->getX(),shape->getDot(i)->getY());
-  //}
-  float initScale = 3.0f;
-  ItbMapImage map(shape, 0.0f, 0.0f, 1.0f);
-  ItbMapImage mainMap(shape2, 200.0f, 0.0f, initScale);
-  Missile missile(100, 700, 1);
-  //Plane plane(683,350, 1);
-  PlaneImage planeImage(150,250,0.5f);
-  float inp = 1;
-  View miniView(&map,0,0,370,423);
-  View mainView(&mainMap,380, 0, frame.getScreenWidth()-100, frame.getScreenHeight()-100);
-  missile.rotate(90);
-  int moveFactor = 5;
-  for(;;i++){
-    frame.clearScreen();
-    char lastKey = input.getLastKey();
-    if (lastKey != '\0'){
-      mainView.updateClipRelative(0,0,0,0);
-      if (lastKey == 'w') {
-        mainMap.translate(0, -moveFactor);
-      } else if (lastKey == 's') {
-        mainMap.translate(0,moveFactor);
-      } else if (lastKey == 'd') {
-        mainMap.translate(moveFactor,0);
-      } else if (lastKey == 'a') {
-        mainMap.translate(-moveFactor,0);
-      } else if (lastKey == '=') {
-        mainMap.scale(1.01f, (mainView.xmax-mainView.xmin)/2, (mainView.ymax - mainView.ymin) /2);
-      } else if (lastKey == '-') {
-        mainMap.scale(0.99f, (mainView.xmax-mainView.xmin)/2, (mainView.ymax - mainView.ymin) /2);
-      } else if (lastKey == 'q') {
-          break;
-      }
-    }
-    //for(int i = 0; i<shape.size();i++){
-    //  frame.draw(shape.at(i));
-    //}
-    frame.setViewBorder(&miniView, 255, 255, 255);
-    frame.draw(&mainView);
-    frame.draw(&miniView);
-    frame.clearBuffer();
-    usleep(30000);
-  }
-  frame.unmapped();
-  frame.closeReading();
-  return 0;
-}
-
-int StartPlane() {
-  int i=1;
-  FrameBuffer frame;
-  Input input;
-  Missile missile(100, 700, 1);
-  Plane plane(683,350, 1);
-  missile.rotate(90);
-  for(;;i++){
-    frame.clearScreen();
-    plane.draw(&frame);
-    if(!missile.CheckCollision(&frame)){
-      missile.rotate(-1, 0, 0);
-      frame.draw(&missile);
-    } else {
-      plane.detachWheel();
-    }
-    
-    char lastKey = input.getLastKey();
-    if (lastKey == 'q') break;
-
-    frame.clearBuffer();
-    usleep(30000);
-  }
-  frame.unmapped();
-  frame.closeReading();
-  return 0;
-}
-
-CustomShape* readFile(string fileName) {
-  FILE *file;
-  file = fopen(fileName.c_str(), "r");
-
-  float x, y;
-  int numberOfLines;
-  if(file != NULL){
-    fscanf(file, "%d", &numberOfLines);
-    CustomShape* shape = new CustomShape(1, numberOfLines);
-    for(int i = 0; i < numberOfLines; i++){
-        fscanf(file, "%f %f", &x, &y);
-
-        shape->setDotCoordinate(i, x, y);
-    }
-    fclose(file);
-    return shape;
-  } else {
-    printf("NULL\n");
-    return new CustomShape;
-  }
-}
-
-Credits::Credits() {
-  ;
-}
-
 /*
 	Tugas 1 Grafika
 	Kevin Erdiza Yogatama 	- 13515016
@@ -143,96 +7,31 @@ Credits::Credits() {
 	Adrian Hartarto			- 13515091
 	Martin Lutta			- 13515121
 */
+
+#define MAX_MTX 100
+#define LETTER_SPACING 51
+#define LINE_SPACING 70
+#define X_POS 10
+
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <linux/fb.h>
+#include <pthread.h>
+#include <sys/mman.h>
+#include <sys/ioctl.h>
+#include <termios.h>
+
+int shoot = 0;
+
 /************ FUNGSI ABSTRAKSI *************/
-
-void SetLine(int grid[50][50], int x0, int y0, int x1, int y1) {
-   	int dx = abs(x1-x0), sx = x0<x1 ? 1 : -1;
-  	int dy = abs(y1-y0), sy = y0<y1 ? 1 : -1;
-  	int err = (dx>dy ? dx : -dy)/2, e2;
-
- 	for(;;){
-		if (grid[x0][y0] == 0)
-    		grid[x0][y0] = 1;
-    	if (x0==x1 && y0==y1)
-			break;
-    	e2 = err;
-    	if (e2 >-dx) { err -= dy; x0 += sx; }
-    	if (e2 < dy) { err += dx; y0 += sy; }
-	}
-}
-
-void SetLine2(int grid[50][50], int x0, int y0, int x1, int y1) {
-   	int dx = abs(x1-x0), sx = x0<x1 ? 1 : -1;
-  	int dy = abs(y1-y0), sy = y0<y1 ? 1 : -1;
-  	int err = (dx>dy ? dx : -dy)/2, e2;
-
- 	for(;;){
-    	grid[x0][y0] = 2;
-    	if (x0==x1 && y0==y1)
-			break;
-    	e2 = err;
-    	if (e2 >-dx) { err -= dy; x0 += sx; }
-    	if (e2 < dy) { err += dx; y0 += sy; }
-	}
-}
-
-void polygonFill(int grid[50][50], int a[20][2], int n) {
-	  int i, j, k, dy, dx;
-    int x, y, temp;
-    int xi[20];
-    float slope[20];
-
-    a[n][0] = a[0][0];
-    a[n][1] = a[0][1];
-
-    /*- draw polygon -*/
-    for (i = 0; i < n; i++) {
-		SetLine2(grid, a[i][0], a[i][1], a[i + 1][0], a[i + 1][1]);
-    }
-    //getch();
-
-    for (i = 0; i < n; i++) {
-      dy = a[i + 1][1] - a[i][1];
-      dx = a[i + 1][0] - a[i][0];
-      if (dy == 0) slope[i] = 1.0;
-      if (dx == 0) slope[i] = 0.0;
-      if ((dy != 0) && (dx != 0)) /*- calculate inverse slope -*/ {
-        slope[i] = (float) dx / dy;
-      }
-    }
-
-    for (y = 0; y <= 50; y++) {
-      k = 0;
-      for (i = 0; i < n; i++) {
-        if (((a[i][1] <= y) && (a[i + 1][1] > y)) ||
-          ((a[i][1] > y) && (a[i + 1][1] <= y))) {
-          xi[k] = (int)(a[i][0] + slope[i] * (y - a[i][1]));
-          k++;
-        }
-      }
-
-      for (j = 0; j < k - 1; j++) /*- Arrange x-intersections in order -*/
-        for (i = 0; i < k - 1; i++) {
-          if (xi[i] > xi[i + 1]) {
-            temp = xi[i];
-            xi[i] = xi[i + 1];
-            xi[i + 1] = temp;
-          }
-        }
-      //setcolor(35);
-      for (i = 0; i < k; i += 2) {
-        SetLine(grid, xi[i], y, xi[i + 1] + 1, y);
-        //getch();
-      }
-    }
-
-}
 
 int clearPixel(char * fbp, long int location) {
     *(fbp + location) = 0;
     *(fbp + location + 1) = 0;
     *(fbp + location + 2) = 0;
-    *(fbp + location + 3) = 0;
+    *(fbp + location + 3) = 0;    
 
     return 0;
 }
@@ -260,13 +59,13 @@ int paintPixel(char * fbp, long int location, int r, int g, int b) {
     return 0;
 }
 
-void makeDot(int matrix[MAX_MTX][MAX_MTX], int x, int y, int size, int value) {
+void makeDot(int matrix[MAX_MTX][MAX_MTX], int x, int y, int size) {
     int i;
     int j;
 
     for (i = x; i < x + size; i++) {
         for (j = y; j < y + size; j++) {
-            matrix[i][j] = value;
+            matrix[i][j] = 1;
         }
     }
 }
@@ -278,16 +77,29 @@ void printGrid(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
     for (x = 0; x < 50; x++) {
         for (y = 0; y < 50; y++) {
             if (grid[x][y] == 1) {
-                makeDot(charMatrix, x * 1, y * 1, 1, 1);
-            } else if (grid[x][y] == 2) {
-				makeDot(charMatrix, x * 1, y * 1, 1, 2);
-			}
+                makeDot(charMatrix, x * 1, y * 1, 1);
+            }
         }
     }
 }
 
 void Set(int grid[50][50], int x, int y) {
     grid[x][y] = 1;
+}
+
+void SetLine(int grid[50][50], int x0, int y0, int x1, int y1) {
+   	int dx = abs(x1-x0), sx = x0<x1 ? 1 : -1;
+  	int dy = abs(y1-y0), sy = y0<y1 ? 1 : -1;
+  	int err = (dx>dy ? dx : -dy)/2, e2;
+
+ 	for(;;){
+    	grid[x0][y0] = 1;
+    	if (x0==x1 && y0==y1) 
+			break;
+    	e2 = err;
+    	if (e2 >-dx) { err -= dy; x0 += sx; }
+    	if (e2 < dy) { err += dx; y0 += sy; }
+	}
 }
 
 void clearGrid(int grid[50][50]) {
@@ -312,94 +124,6 @@ void clearMatrix(int charMatrix[MAX_MTX][MAX_MTX]){
 
 /* Cukup tambahin di sini aja, range x & y antara 1 s.d. 15. Di laptopku lebih dari itu segmentation fault */
 
-int SetSolidT(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]){
-	clearGrid(grid);
-	int a[20][2];
-	//x				//y
-	a[0][0] = 1;	a[0][1] = 1;
-	a[1][0] = 49;	a[1][1] = 1;
-	a[2][0] = 49;	a[2][1] = 15;
-	a[3][0] = 30;	a[3][1] = 15;
-	a[4][0] = 30;	a[4][1] = 49;
-	a[5][0] = 18;	a[5][1] = 49;
-	a[6][0] = 18;	a[6][1] = 15;
-	a[7][0] = 1;	a[7][1] = 15;
-	polygonFill(grid, a, 8);
-
-	printGrid(grid, charMatrix);
-}
-
-
-int SetSolidU(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]){
-	clearGrid(grid);
-	int a[20][2];
-	//x				//y
-	a[0][0] = 1;	a[0][1] = 1;
-	a[1][0] = 10;	a[1][1] = 1;
-	a[2][0] = 10;	a[2][1] = 39;
-	a[3][0] = 39;	a[3][1] = 39;
-	a[4][0] = 39;	a[4][1] = 1;
-	a[5][0] = 49;	a[5][1] = 1;
-	a[6][0] = 49;	a[6][1] = 49;
-	a[7][0] = 1;	a[7][1] = 49;
-	polygonFill(grid, a, 8);
-
-	printGrid(grid, charMatrix);
-}
-
-int SetSolidN(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]){
-	clearGrid(grid);
-	int a[20][2];
-	//x				//y
-	a[0][0] = 1;	a[0][1] = 1;
-	a[1][0] = 1;	a[1][1] = 49;
-	a[2][0] = 19;	a[2][1] = 49;
-	a[3][0] = 19;	a[3][1] = 9;
-	a[4][0] = 39;	a[4][1] = 9;
-	a[5][0] = 39;	a[5][1] = 49;
-	a[6][0] = 49;	a[6][1] = 49;
-	a[7][0] = 49;	a[7][1] = 1;
-	polygonFill(grid, a, 8);
-
-	printGrid(grid, charMatrix);
-}
-
-int SetSolidK(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]){
-	clearGrid(grid);
-	int a[20][2];
-	//x				//y
-	a[0][0] = 1;	a[0][1] = 1;
-	a[1][0] = 1;	a[1][1] = 49;
-	a[2][0] = 19;	a[2][1] = 49;
-	a[3][0] = 19;	a[3][1] = 29;
-	a[4][0] = 39;	a[4][1] = 49;
-	a[5][0] = 49;	a[5][1] = 49;
-	a[6][0] = 25;	a[6][1] = 25;
-	a[7][0] = 49;	a[7][1] = 1;
-	a[8][0] = 39;	a[8][1] = 1;
-	a[9][0] = 19;	a[9][1] = 19;
-	a[10][0] = 19;	a[10][1] = 1;
-
-
-	polygonFill(grid, a, 11);
-
-	printGrid(grid, charMatrix);
-}
-
-int SetTriangle(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]){
-	clearGrid(grid);
-	int a[20][2];
-	//x				//y
-	a[0][0] = 25;	a[0][1] = 1;
-	a[1][0] = 49;	a[1][1] = 49;
-	a[2][0] = 1;	a[2][1] = 49;
-	polygonFill(grid, a, 3);
-
-	printGrid(grid, charMatrix);
-}
-
-
-
 void Set2(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
 	clearGrid(grid);
 	SetLine(grid, 19, 1, 49, 1);
@@ -419,7 +143,7 @@ void SetA(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
 }
 
 void SetB(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
-	clearGrid(grid);
+	clearGrid(grid);	
 	SetLine(grid, 1, 1, 1, 49);
 	SetLine(grid, 1, 1, 49, 13);
 	SetLine(grid, 49, 13, 1, 25);
@@ -429,7 +153,7 @@ void SetB(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
 }
 
 void SetD(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
-	clearGrid(grid);
+	clearGrid(grid);	
 	SetLine(grid, 1, 1, 1, 49);
 	SetLine(grid, 1, 1, 49, 25);
 	SetLine(grid, 49, 25, 1, 49);
@@ -437,7 +161,7 @@ void SetD(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
 }
 
 void SetE(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
-	clearGrid(grid);
+	clearGrid(grid);	
 	SetLine(grid, 1, 1, 49, 1);
 	SetLine(grid, 1, 1, 1, 49);
 	SetLine(grid, 1, 49, 49, 49);
@@ -447,7 +171,7 @@ void SetE(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
 }
 
 void SetG(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
-	clearGrid(grid);
+	clearGrid(grid);	
     SetLine(grid, 1, 1, 49, 1);
 	SetLine(grid, 1, 1, 1, 49);
 	SetLine(grid, 1, 49, 49, 49);
@@ -466,7 +190,7 @@ void SetH(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
 }
 
 void SetI(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
-	clearGrid(grid);
+	clearGrid(grid);	
 	SetLine(grid, 1, 1, 49, 1);
 	SetLine(grid, 25, 1, 25, 49);
 	SetLine(grid, 1, 49, 49, 49);
@@ -474,7 +198,7 @@ void SetI(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
 }
 
 void SetK(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
-	clearGrid(grid);
+	clearGrid(grid);	
 	SetLine(grid, 1, 1, 1, 49);
 	SetLine(grid, 1, 25, 49, 1);
 	SetLine(grid, 1, 25, 49, 49);
@@ -487,7 +211,7 @@ void SetM(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
 	SetLine(grid, 1, 1, 25, 20);
 	SetLine(grid, 25, 20, 49, 1);
 	SetLine(grid, 49, 1, 49, 49);
-
+	
     printGrid(grid, charMatrix);
 }
 
@@ -500,7 +224,7 @@ void SetN(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
 }
 
 void SetO(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
-	clearGrid(grid);
+	clearGrid(grid);	
     SetLine(grid, 1, 25, 25, 1);
 	SetLine(grid, 25, 1, 49, 25);
 	SetLine(grid, 49, 25, 25, 49);
@@ -509,7 +233,7 @@ void SetO(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
 }
 
 void SetL(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
-	clearGrid(grid);
+	clearGrid(grid);	
 	SetLine(grid, 1, 1, 1, 49);
 	SetLine(grid, 1, 49, 49, 49);
 
@@ -517,7 +241,7 @@ void SetL(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
 }
 
 void SetR(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
-	clearGrid(grid);
+	clearGrid(grid);	
 	SetLine(grid, 1, 1, 1, 49);
 	SetLine(grid, 1, 1, 40, 15);
 	SetLine(grid, 40, 15, 1, 30);
@@ -527,7 +251,7 @@ void SetR(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
 }
 
 void SetS(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
-	clearGrid(grid);
+	clearGrid(grid);	
     SetLine(grid, 1, 1, 49, 1);
 	SetLine(grid, 1, 1, 1, 25);
 	SetLine(grid, 1, 25, 49, 25);
@@ -538,7 +262,7 @@ void SetS(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
 }
 
 void SetT(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
-	clearGrid(grid);
+	clearGrid(grid);	
 	SetLine(grid, 1, 1, 49, 1);
 	SetLine(grid, 25, 1, 25, 49);
 
@@ -554,7 +278,7 @@ void SetU(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
 }
 
 void SetY(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX]) {
-	clearGrid(grid);
+	clearGrid(grid);	
 	SetLine(grid, 1, 1, 25, 20);
 	SetLine(grid, 25, 20, 49, 1);
 	SetLine(grid, 25, 20, 25, 49);
@@ -614,11 +338,24 @@ void SetZ(int grid[50][50], int charMatrix[MAX_MTX][MAX_MTX])
 	printGrid(grid, charMatrix);
 }
 
+
+//RENDER 
+//void *renderPlane(void *vargp);
+
+//TULIS KODE FITUR PELURU DI SINI
+void *renderer2(void *vargp) {
+	for(;;){	
+		char c = getchar();
+		if (c) {
+			shoot = 1;		
+		}
+	}
+}
+
 /*****************************************************************/
 /* Cukup ubah di bagian Set aja kalau mau nyetak huruf           */
 /*****************************************************************/
-int Credits::ShowCredits()
-{
+//Jadiin global untuk share sesama thread
     int fbfd = 0;
     struct fb_var_screeninfo vinfo;
     struct fb_fix_screeninfo finfo;
@@ -631,17 +368,35 @@ int Credits::ShowCredits()
 	int tugasText[7][MAX_MTX][MAX_MTX];
 	int adrianText[15][MAX_MTX][MAX_MTX];
 	int kukuhText[12][MAX_MTX][MAX_MTX];
-int kevinText[12][MAX_MTX][MAX_MTX];
+	int kevinText[12][MAX_MTX][MAX_MTX];
 	int martinText[12][MAX_MTX][MAX_MTX];
 	int rayText[10][MAX_MTX][MAX_MTX];
 	int winartoText[7][MAX_MTX][MAX_MTX];
+	int plane[MAX_MTX][MAX_MTX];    
 	int grid[50][50];
+	int bullet[MAX_MTX][MAX_MTX];
+	int offsetSet = 0;
+	int offset = 0;
+
+int main()
+{
+	//For player input
+	pthread_t tid, tplane;
+
+	struct termios info;
+	tcgetattr(0, &info);          /* get current terminal attirbutes; 0 is the file descriptor for stdin */
+	info.c_lflag &= ~ICANON;      /* disable canonical mode */
+	info.c_cc[VMIN] = 1;          /* wait until at least one keystroke available */
+	info.c_cc[VTIME] = 0;         /* no timeout */
+	tcsetattr(0, TCSANOW, &info); /* set immediately */
+	pthread_create(&tid, NULL, renderer2, NULL);
+
 
     // Initialize Empty Matrix
 	for (len = 0; len < 15; len++) {
 		if(len <= 7) {
 			clearMatrix(tugasText[len]);
-			clearMatrix(winartoText[len]);
+			clearMatrix(winartoText[len]);		
 		}
 		if(len <= 10) {
 			clearMatrix(rayText[len]);
@@ -684,36 +439,119 @@ clearMatrix(kevinText[len]);
 
     // Map the device to memory
     fbp = (char *)mmap(0, screensize, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0);
-    if (atoi(fbp) == -1) {
+    if ((int)fbp == -1) {
         perror("Error: failed to map framebuffer device to memory");
         exit(4);
     }
     printf("The framebuffer device was mapped to memory successfully.\n");
 
     backbuf = (char *)mmap(0, screensize, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
-    if (atoi(backbuf) == -1) {
+    if ((int)backbuf == -1) {
         perror("Error: failed to map framebuffer device to memory");
         exit(5);
     }
     printf("The framebuffer device was mapped to memory successfully.\n");
 
-    /* Cukup tambahin di sini aja, range x & y antara 1 s.d. 15. Di laptopku lebih dari itu segmentation fault */
+    /* Cukup tambahin di sini aja, range x & y antara 1 s.d. 15. Di laptopku lebih dari itu segmentation fault */ 
+	
+	//Bullet
+	SetBullet(grid, bullet);
+	//Plane
+	SetV2(grid, plane);
 	//Tugas 1
-	SetSolidT(grid, tugasText[0]);
-	SetSolidU(grid, adrianText[1]);
+	SetT(grid, tugasText[0]);
+	SetU(grid, tugasText[1]);
+	SetG(grid, tugasText[2]);
+	SetA(grid, tugasText[3]);
+	SetS(grid, tugasText[4]);
+	Set2(grid, tugasText[6]);
+	//Adrian
+	SetA(grid, adrianText[0]);
+	SetD(grid, adrianText[1]);
+	SetR(grid, adrianText[2]);
+	SetI(grid, adrianText[3]);
+	SetA(grid, adrianText[4]);
+	SetN(grid, adrianText[5]);
+	SetH(grid, adrianText[7]);
+	SetA(grid, adrianText[8]);
+	SetR(grid, adrianText[9]);
+	SetT(grid, adrianText[10]);
+	SetA(grid, adrianText[11]);
+	SetR(grid, adrianText[12]);
+	SetT(grid, adrianText[13]);
+	SetO(grid, adrianText[14]);
 
-	SetTriangle(grid, kevinText[2]);
+	//Kevin
+	SetK(grid, kevinText[0]);
+	SetE(grid, kevinText[1]);
+	SetV(grid, kevinText[2]);
+	SetI(grid, kevinText[3]);
+	SetN(grid, kevinText[4]);
 
-	SetSolidN(grid, kukuhText[2]);
-	SetSolidK(grid, martinText[2]);
+	SetE(grid, kevinText[6]);
+	SetR(grid, kevinText[7]);
+	SetD(grid, kevinText[8]);
+	SetI(grid, kevinText[9]);
+	SetZ(grid, kevinText[10]);
+	SetA(grid, kevinText[11]);
 
+	//Kukuh
+	SetK(grid, kukuhText[0]);	
+	SetU(grid, kukuhText[1]);	
+	SetK(grid, kukuhText[2]);	
+	SetU(grid, kukuhText[3]);	
+	SetH(grid, kukuhText[4]);	
+	SetB(grid, kukuhText[6]);	
+	SetA(grid, kukuhText[7]);	
+	SetS(grid, kukuhText[8]);	
+	SetU(grid, kukuhText[9]);	
+	SetK(grid, kukuhText[10]);	
+	SetI(grid, kukuhText[11]);	
+
+
+	//Martin
+	SetM(grid, martinText[0]);
+	SetA(grid, martinText[1]);
+	SetR(grid, martinText[2]);
+	SetT(grid, martinText[3]);
+	SetI(grid, martinText[4]);
+	SetN(grid, martinText[5]);
+	SetL(grid, martinText[7]);
+	SetU(grid, martinText[8]);
+	SetT(grid, martinText[9]);
+	SetT(grid, martinText[10]);
+	SetA(grid, martinText[11]);
+	
+	//Ray Andrew
+	SetR(grid, rayText[0]);
+	SetA(grid, rayText[1]);
+	SetY(grid, rayText[2]);
+	SetA(grid, rayText[4]);
+	SetN(grid, rayText[5]);
+	SetD(grid, rayText[6]);
+	SetR(grid, rayText[7]);
+	SetE(grid, rayText[8]);
+	SetW(grid, rayText[9]);
+
+	//Winarto
+	SetW(grid, winartoText[0]);
+	SetI(grid, winartoText[1]);
+	SetN(grid, winartoText[2]);
+	SetA(grid, winartoText[3]);
+	SetR(grid, winartoText[4]);
+	SetT(grid, winartoText[5]);
+	SetO(grid, winartoText[6]);
+
+    // Loop forever
+    //while(1) {
+	//pthread_create(&tplane, NULL, renderPlane, NULL);
 	int i,charLen;
-	for(i = vinfo.yres; i > -3*MAX_MTX*1.5; i=i-4) {
-        for (y = 0; y < 600; y++){
+	for(i = vinfo.yres; i > -3*MAX_MTX*1.8; i=i-4) {
+        for (y = -768; y < 600; y++){
 			int yPosition = (y+i+vinfo.yoffset);
 			//printf("yPos = %d\n", yPosition);
-			if(yPosition < vinfo.yres-5){
-				for (x = 0; x < 1000; x++) {
+			if(yPosition < vinfo.yres-5){	        
+				for (x = 0; x < 1366; x++) {
 		            location = (x+vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
 		                        (yPosition) * finfo.line_length;
 		            clearPixel(backbuf, location);
@@ -722,53 +560,74 @@ clearMatrix(kevinText[len]);
 		}
         for (y = 0; y < MAX_MTX; y++){
 			int yPosition = (y+i+vinfo.yoffset);
+			if(shoot) {
+				if(!offsetSet) {
+					offset = i;
+					offsetSet = 1;
+					printf("%d", offset);
+				}
+				//printf("%d", offset);
+				int bulletY = y+(i*2)+vinfo.yoffset + (vinfo.yres - offset * 2);
+				if(bulletY < vinfo.yres-5) {		
+				   	for (x = 850; x < MAX_MTX+850; x++) {
+				        location = (x + vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
+				                    (bulletY) * finfo.line_length;
+				        if (bullet[x-850][y] == 1) {
+				            paintPixel(backbuf, location, 255, 255, 255);
+				        }
+				    }
+			}
+			}			
+			if(yPosition < vinfo.yres-5) {		
+				   	for (x = 0; x < MAX_MTX; x++) {
+				        location = (x + i + 598 + vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
+				                    (y + vinfo.yoffset) * finfo.line_length;
+				        if (plane[x][y] == 1) {
+				            paintPixel(backbuf, location, 255, 255, 255);
+				        }
+				    }
+			}
 			//Print tugas I
-			if(yPosition < vinfo.yres-5) {
-				for (charLen = 0; charLen < 1; charLen++) {
+			if(yPosition < vinfo.yres-5) {		
+				for (charLen = 0; charLen < 7; charLen++) {
 				    for (x = X_POS+100; x < X_POS+100+MAX_MTX; x++) {
 				        location = ((charLen * LETTER_SPACING) + x + vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
 				                    (yPosition) * finfo.line_length;
 				        if (tugasText[charLen][x-X_POS-100][y] == 1) {
-				            paintPixel(backbuf, location, 255, 10, 0);
-				        } else if (tugasText[charLen][x-X_POS-100][y] == 2) {
-				            paintPixel(backbuf, location, 10, 255, 10);
+				            paintPixel(backbuf, location, 255, 255, 255);
 				        }
 				    }
 				}
 			}
 
 			//Print Nama Adrian
-			if(yPosition+LINE_SPACING < vinfo.yres-5) {
+			if(yPosition+LINE_SPACING < vinfo.yres-5) {		
 				for (charLen = 0; charLen < 15; charLen++) {
 				    for (x = X_POS; x < X_POS+MAX_MTX; x++) {
 				        location = ((charLen * LETTER_SPACING) + x + vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
 				                    (yPosition+LINE_SPACING) * finfo.line_length;
 				        if (adrianText[charLen][x-X_POS][y] == 1) {
 				            paintPixel(backbuf, location, 200, 20, 20);
-				        } else if (adrianText[charLen][x-X_POS][y] == 2) {
-				            paintPixel(backbuf, location, 200, 200, 20);
 				        }
 				    }
 				}
-			}
+			}						
 
 			//Print Nama Kukuh
-			if(yPosition+2*LINE_SPACING < vinfo.yres-5) {
+			if(yPosition+2*LINE_SPACING < vinfo.yres-5) {		
 				for (charLen = 0; charLen < 12; charLen++) {
 				    for (x = X_POS; x < X_POS+MAX_MTX; x++) {
 				        location = ((charLen * LETTER_SPACING) + x + vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
 				                    (yPosition+2*LINE_SPACING) * finfo.line_length;
 				        if (kukuhText[charLen][x-X_POS][y] == 1) {
 				            paintPixel(backbuf, location, 200, 140, 100);
-				        } else if (kukuhText[charLen][x-X_POS][y] == 2) {
-				            paintPixel(backbuf, location, 0, 200, 150);
 				        }
 				    }
 				}
 			}
 
 			//Print Nama Kevin
-			if(yPosition+3*LINE_SPACING < vinfo.yres-5) {
+			if(yPosition+3*LINE_SPACING < vinfo.yres-5) {		
 				for (charLen = 0; charLen < 12; charLen++) {
 				    for (x = X_POS; x < X_POS+MAX_MTX; x++) {
 				        location = ((charLen * LETTER_SPACING) + x + vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
@@ -780,8 +639,8 @@ clearMatrix(kevinText[len]);
 				}
 			}
 
-			//Print Nama Martin
-			if(yPosition+4*LINE_SPACING < vinfo.yres-5) {
+			//Print Nama Martin	
+			if(yPosition+4*LINE_SPACING < vinfo.yres-5) {		
 				for (charLen = 0; charLen < 12; charLen++) {
 				    for (x = X_POS; x < X_POS+MAX_MTX; x++) {
 				        location = ((charLen * LETTER_SPACING) + x + vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
@@ -794,7 +653,7 @@ clearMatrix(kevinText[len]);
 			}
 
 			//Print Nama Ray
-			if(yPosition+5*LINE_SPACING < vinfo.yres-5) {
+			if(yPosition+5*LINE_SPACING < vinfo.yres-5) {			
 				for (charLen = 0; charLen < 10; charLen++) {
 				    for (x = X_POS; x < X_POS+MAX_MTX; x++) {
 				        location = ((charLen * LETTER_SPACING) + x + vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
@@ -805,9 +664,9 @@ clearMatrix(kevinText[len]);
 				    }
 				}
 			}
-
+			
 			//Print Nama Winarto
-			if(yPosition+6*LINE_SPACING < vinfo.yres-5) {
+			if(yPosition+6*LINE_SPACING < vinfo.yres-5) {		
 				for (charLen = 0; charLen < 7; charLen++) {
 				    for (x = X_POS; x < X_POS+MAX_MTX; x++) {
 				        location = ((charLen * LETTER_SPACING) + x + vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
@@ -818,9 +677,10 @@ clearMatrix(kevinText[len]);
 				    }
 				}
 			}
+		usleep(500);		
 		}
-
-
+        
+	
 		int copy;
 		for (copy=0;copy<screensize;copy++)
 		{
@@ -830,5 +690,25 @@ clearMatrix(kevinText[len]);
     }
     munmap(fbp, screensize);
     close(fbfd);
+	pthread_join(tid, NULL);
+	//pthread_join(tplane, NULL);
     return 0;
-  }
+}
+
+/*void *renderPlane(void *vargp) {
+	int i, charLen;
+	for(i = vinfo.xres; i > 0; i++) {
+		for (y = 0; y < MAX_MTX; y++){
+			//if(yPosition < vinfo.yres-5) {		
+				   	for (x = 0; x < MAX_MTX; x++) {
+				        location = (x + i + vinfo.xoffset) * (vinfo.bits_per_pixel/8) +
+				                    (y + vinfo.yoffset) * finfo.line_length;
+				        if (plane[x][y] == 1) {
+				            paintPixel(backbuf, location, 255, 255, 255);
+				        }
+				    }
+			//}
+		}
+	usleep(5000);	
+	}
+}*/

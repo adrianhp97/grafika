@@ -14,6 +14,7 @@
 #include "ItbMapImage.h"
 #include "Menu/MenuBox.h"
 #include "Menu/MenuActivities.h"
+#include "Cursor/Cursor.h"
 
 using namespace std;
 
@@ -23,6 +24,7 @@ int main(int argc, char* argv[]) {
   int state = 0;
   int height = frame.getScreenHeight();
   int width = frame.getScreenWidth();
+  Credits * credits = new Credits();
   Input input;
   MenuBox** menu = new MenuBox*;
   menu[0] = new MenuBox(width/2,height/3,20,1);
@@ -55,6 +57,9 @@ int main(int argc, char* argv[]) {
           case 1 : {
             StartPlane();
             break;
+          }
+          case 2 : {
+            credits->ShowCredits();
           }
           default : break;
         }

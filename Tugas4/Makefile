@@ -1,6 +1,6 @@
 CC=g++
-CFLAGS=-c -Wall -g -std=c++11
-LDFLAGS=-g -lm -lpthread
+CFLAGS=-c -Wall -g -std=c++11 
+LDFLAGS=-g -lm -lpthread -lncurses -lX11
 
 SOURCES=$(wildcard ./src/*.cpp) $(wildcard ./src/**/*.cpp)
 OBJECTS=$(SOURCES:.cpp=.o)
